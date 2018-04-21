@@ -122,7 +122,10 @@ def copy_source_code(path):
     python_files = [python_filepath for python_filepath in python_files if not is_hidden_path(python_filepath)]
 
     for python_file in python_files:
-        shutil.copy(str(python_file), str(path/python_file))
+        target_path = path/SOURCE_CODE_FOLDER/python_file
+        target_path.parent.mkdir(exist_ok=True)
+
+        shutil.copy(str(python_file), str(target_path))
 
 
 def is_hidden_path(path):
