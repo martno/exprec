@@ -24,11 +24,17 @@ class Procedure:
     parent_folder = attr.ib(default=DEFAULT_PARENT_FOLDER)
 
     def __attrs_post_init__(self):
+        self.name = self.name.strip()
+
         self.uuid = uuid.uuid1()  # Time UUID
         self.path = Path(self.parent_folder) / str(self.uuid)
 
     def __enter__(self):
         Path(self.parent_folder).mkdir(exist_ok=True)
+
+        if not is_name_available(self.name, self.parent_folder):
+            raise ValueError("Name '{}' is already occupied.".format(self.name))
+
         self.path.mkdir(exist_ok=False)
 
         if self.verbose:
@@ -72,6 +78,18 @@ class Procedure:
         self.stdout_logfile.close()
         self.stderr_logfile.close()
         self.stdcombined_logfile.close()
+
+
+def is_name_available(name, folder):
+    if name == '':
+        return True
+
+    for metadata_json_path in Path(folder).glob('*/' + METADATA_JSON_FILENAME):
+        metadata_json = load_json(str(metadata_json_path))
+        if metadata_json['name'] == name:
+            return False
+    
+    return True
 
 
 @attr.s
