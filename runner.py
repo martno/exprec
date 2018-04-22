@@ -7,6 +7,9 @@ import datetime
 import json
 import shutil
 import logging
+import subprocess
+
+import utils
 
 
 DEFAULT_PARENT_FOLDER = '.procedures'
@@ -19,6 +22,7 @@ SOURCE_CODE_FOLDER = 'src'
 @attr.s
 class Procedure:
     name = attr.ib(default='')
+    tags = attr.ib(default=attr.Factory(list))
     verbose = attr.ib(default=True)
     exceptions_to_ignore = attr.ib(default=[KeyboardInterrupt])
     parent_folder = attr.ib(default=DEFAULT_PARENT_FOLDER)
@@ -41,7 +45,7 @@ class Procedure:
             name = self.name if len(self.name) > 0 else '(name N/A)'
             print('Running procedure {} {}'.format(self.uuid, name))
         
-        setup_procedure(self.path, self.name)
+        setup_procedure(self.path, self.name, self.tags)
 
         self._create_streams()
 
@@ -63,7 +67,7 @@ class Procedure:
     def __exit__(self, type, value, traceback):
         self._close_streams()
 
-        with UpdateJson(str(self.path/METADATA_JSON_FILENAME)) as metadata:
+        with utils.UpdateJsonFile(str(self.path/METADATA_JSON_FILENAME)) as metadata:
             succeeded = type is None or type in self.exceptions_to_ignore
             metadata['status'] = 'succeeded' if succeeded else 'failed'
             metadata['endedDatetime'] = datetime.datetime.now().isoformat()
@@ -85,7 +89,7 @@ def is_name_available(name, folder):
         return True
 
     for metadata_json_path in Path(folder).glob('*/' + METADATA_JSON_FILENAME):
-        metadata_json = load_json(str(metadata_json_path))
+        metadata_json = utils.load_json(str(metadata_json_path))
         if metadata_json['name'] == name:
             return False
     
@@ -105,31 +109,32 @@ class MultiStream:
             stream.flush()
 
 
-def setup_procedure(path, name):
-    create_metadata_json(path, name)
+def setup_procedure(path, name, tags):
+    create_metadata_json(path, name, tags)
     create_pip_freeze_file(path)
     copy_source_code(path)
 
 
-def create_metadata_json(path, name):
+def create_metadata_json(path, name, tags):
     filename = sys.argv[0]
 
     metadata = {
         'name': name,
+        'tags': sorted(tags),
         'status': 'running',
         'startedDatetime': datetime.datetime.now().isoformat(),
+        'endedDatetime': None,
         'filename': sys.argv[0],
         'arguments': sys.argv[1:],
         'pythonVersion': sys.version,
-    }
+    }   
 
-    dump_json(metadata, str(path/METADATA_JSON_FILENAME))
+    utils.dump_json(metadata, str(path/METADATA_JSON_FILENAME))
 
 
 def create_pip_freeze_file(path):
-    installed_packages = pip.get_installed_distributions()
-    installed_packages_list = sorted(['{}=={}'.format(package.key, package.version) 
-                                      for package in installed_packages])
+    installed_packages_list = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze']).decode('utf-8').split('\n')
+    installed_packages_list = sorted(installed_packages_list)
 
     with open(str(path/PACKAGES_FILENAME), 'w') as fp:
         fp.write('\n'.join(installed_packages_list))
@@ -152,37 +157,5 @@ def is_hidden_path(path):
 
 def uuid1_to_datetime(uuid1):
     import datetime
-    return datetime.datetime.fromtimestamp((uuid1.time - 0x01b21dd213814000)*100/1e9)
-
-
-@attr.s
-class UpdateJson:
-    """Updates the json file in the given path
-
-    E.g.
-    >>> with UpdateJson(path) as json_data:
-    ...     json_data['new_value'] = 42
-    """
-    path = attr.ib()
-
-    def __enter__(self):
-        self.json_data = load_json(self.path)
-        return self.json_data
-
-    def __exit__(self, type, value, traceback):
-        if type is not None:
-            return False
-        
-        dump_json(self.json_data, self.path)
-
-
-def load_json(path):
-    with open(path) as fp:
-        return json.load(fp)
-
-
-def dump_json(json_data, path):
-    with open(path, 'w') as fp:
-        json.dump(json_data, fp, ensure_ascii=False, indent=4)
-    
+    return datetime.datetime.fromtimestamp((uuid1.time - 0x01b21dd213814000)*100/1e9)    
 
