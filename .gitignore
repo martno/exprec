@@ -1,4 +1,5 @@
 *.pyc
-.procedures/
+__pycache__/
+.experiments/
 *~
 .vscode/

@@ -5,7 +5,7 @@ import utils
 import html_utils
 
 
-METADATA_JSON_FILENAME = 'procedure.json'
+METADATA_JSON_FILENAME = 'experiment.json'
 
 COLUMNS = [
     'Select',

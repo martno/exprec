@@ -7,7 +7,7 @@ import experiment_creation
 
 
 DEFAULT_PARENT_FOLDER = '.procedures'
-METADATA_JSON_FILENAME = 'procedure.json'
+METADATA_JSON_FILENAME = 'experiment.json'
 
 
 def main():

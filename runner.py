@@ -14,13 +14,13 @@ import utils
 
 DEFAULT_PARENT_FOLDER = '.procedures'
 
-METADATA_JSON_FILENAME = 'procedure.json'
+METADATA_JSON_FILENAME = 'experiment.json'
 PACKAGES_FILENAME = 'pip_freeze.txt'
 SOURCE_CODE_FOLDER = 'src'
 
 
 @attr.s
-class Procedure:
+class Experiment:
     name = attr.ib(default='')
     tags = attr.ib(default=attr.Factory(list))
     verbose = attr.ib(default=True)
@@ -43,7 +43,7 @@ class Procedure:
 
         if self.verbose:
             name = self.name if len(self.name) > 0 else '(name N/A)'
-            print('Running procedure {} {}'.format(self.uuid, name))
+            print('Running experiment {} {}'.format(self.uuid, name))
         
         setup_procedure(self.path, self.name, self.tags)
 
