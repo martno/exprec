@@ -2,6 +2,8 @@ from yattag import Doc
 import collections
 from pathlib import Path
 import datetime
+import plotly.offline as offline
+import plotly.graph_objs as go
 
 import html_utils
 import constants as c
@@ -39,6 +41,7 @@ def create_experiment_div(uuid):
         content_by_tab_name[icon_title('code', 'Code')] = html_utils.margin(create_code(path, experiment_json))
         content_by_tab_name[icon_title('cube', 'Packages')] = html_utils.margin(create_packages(path))
         content_by_tab_name[icon_title('chart-bar', 'Parameters')] = html_utils.margin(create_parameters(experiment_json))
+        content_by_tab_name[icon_title('chart-area', 'Charts')] = html_utils.margin(create_charts(experiment_json))
 
         tabs_html = html_utils.create_tabs(content_by_tab_name, tabs_id='experiment-tabs')
 
@@ -121,3 +124,34 @@ def create_parameters(experiment_json):
 
     param_list = [{'Parameter': name, 'Value': str(params[name])} for name in sorted(list(params.keys()))]
     return html_utils.create_table(['Parameter', 'Value'], param_list, [[], [('style', 'width: 100%;')]])
+
+
+def create_charts(experiment_json):
+    html = ''
+
+    for name, points in experiment_json['scalars'].items():
+        steps = [point['step'] for point in points]
+        values = [point['value'] for point in points]
+
+        if steps[0] is None:
+            steps = [i for i in range(len(steps))]
+
+        figure_data = {
+            'data': [{
+                'x': steps,
+                'y': values,
+            }], 
+            'layout': {
+                'title': name,
+                'autosize': True,
+                'width': '100%',
+                'height': '100%',
+            }
+        }
+
+        div = offline.plot(figure_data, output_type='div')
+
+        html += div
+
+    return html
+
