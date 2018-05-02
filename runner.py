@@ -17,6 +17,7 @@ DEFAULT_PARENT_FOLDER = '.experiments'
 METADATA_JSON_FILENAME = 'experiment.json'
 PACKAGES_FILENAME = 'pip_freeze.txt'
 SOURCE_CODE_FOLDER = 'src'
+FILES_FOLDER = 'files'
 
 
 @attr.s
@@ -87,6 +88,14 @@ class Experiment:
         json_path = self.path / METADATA_JSON_FILENAME
         with utils.UpdateJsonFile(str(json_path)) as metadata_json:
             metadata_json['parameters'][name] = value
+
+    def open(self, filename, mode='r'):
+        assert '..' not in filename, filename
+
+        filepath = self.path/FILES_FOLDER/filename
+        filepath.mkdir(exists_ok=True)
+
+        return open(str(filepath), mode)
 
 
 def is_name_available(name, folder):

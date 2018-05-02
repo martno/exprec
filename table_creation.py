@@ -1,8 +1,11 @@
 import datetime
 from yattag import Doc
+import natural.size
+import os
 
 import utils
 import html_utils
+import constants as c
 
 
 METADATA_JSON_FILENAME = 'experiment.json'
@@ -16,6 +19,7 @@ COLUMNS = [
     'Start',
     'End',
     'Tags',
+    'File space',
     'ID',
 ]
 
@@ -26,13 +30,13 @@ def create_table_from_uuids(uuids, path):
     for uuid in uuids:
         metadata_json_path = path/uuid/METADATA_JSON_FILENAME
         metadata = utils.load_json(str(metadata_json_path))
-        procedure_item_by_column = create_procedure_item_by_column(uuid, metadata)
+        procedure_item_by_column = create_procedure_item_by_column(uuid, path, metadata)
         procedure_item_by_column_list.append(procedure_item_by_column)
 
     return html_utils.create_table(COLUMNS, procedure_item_by_column_list)
 
 
-def create_procedure_item_by_column(uuid, metadata):
+def create_procedure_item_by_column(uuid, path, metadata):
     name = metadata['name']
     start = datetime.datetime.strptime(metadata['startedDatetime'], "%Y-%m-%dT%H:%M:%S.%f")
     end = None if metadata['endedDatetime'] is None else datetime.datetime.strptime(metadata['endedDatetime'], "%Y-%m-%dT%H:%M:%S.%f")
@@ -46,6 +50,12 @@ def create_procedure_item_by_column(uuid, metadata):
     status = metadata['status']
     tags = sorted(metadata['tags'])
 
+    file_space = get_total_size(str(path/c.FILES_FOLDER))
+    if file_space > 0:
+        file_space = natural.size.decimalsize(file_space)
+    else:
+        file_space = None
+
     procedure_item_by_column = {
         'Select': "<button class='btn btn-primary experiment-button' id='button-{}'>Show</button>".format(uuid),
         'Status': html_utils.get_status_icon_tag(status),
@@ -55,6 +65,7 @@ def create_procedure_item_by_column(uuid, metadata):
         'Start': start.strftime('%Y-%m-%d %H:%M:%S'),
         'End': end.strftime('%Y-%m-%d %H:%M:%S') if end is not None else None,
         'Tags': ' '.join([html_utils.badge(tag) for tag in tags]),
+        'File space': file_space,
         'ID': html_utils.monospace(uuid),
     }
 
@@ -70,4 +81,14 @@ def list_join(lst, item):
 
 def flatten(lst):
     return sum(lst, [])
+
+
+def get_total_size(root):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(root):
+        for filename in filenames:
+            filepath = os.path.join(dirpath, filename)
+            total_size += os.path.getsize(filepath)
+
+    return total_size
 
