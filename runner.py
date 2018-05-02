@@ -31,8 +31,8 @@ class Experiment:
     def __attrs_post_init__(self):
         self.name = self.name.strip()
 
-        self.uuid = uuid.uuid1()  # Time UUID
-        self.path = Path(self.parent_folder) / str(self.uuid)
+        self.uuid = str(uuid.uuid1())  # Time UUID
+        self.path = Path(self.parent_folder) / self.uuid
 
     def __enter__(self):
         Path(self.parent_folder).mkdir(exist_ok=True)
@@ -89,11 +89,43 @@ class Experiment:
         with utils.UpdateJsonFile(str(json_path)) as metadata_json:
             metadata_json['parameters'][name] = value
 
-    def open(self, filename, mode='r'):
+    def add_scalar(self, name, value, step=None):
+        json_path = self.path / METADATA_JSON_FILENAME
+        with utils.UpdateJsonFile(str(json_path)) as metadata_json:
+            if name not in metadata_json['scalars']:
+                metadata_json['scalars'][name] = []
+
+            metadata_json['scalars'][name].append({
+                'value': value,
+                'step': step,
+                'time': datetime.datetime.now().isoformat(),
+            })
+
+    def open(self, filename, mode='r', uuid=None):
+        assert uuid != self.uuid, "'uuid' may not be the same as this experiment's uuid. Set `uuid=None` to open a file with this experiment."
         assert '..' not in filename, filename
 
-        filepath = self.path/FILES_FOLDER/filename
-        filepath.mkdir(exists_ok=True)
+        if uuid is None:
+            filepath = self.path/FILES_FOLDER/filename
+            filepath.parent.mkdir(exist_ok=True)
+        else:
+            assert 'w' not in mode, mode
+            assert 'a' not in mode, mode
+            filepath = Path(self.parent_folder)/uuid/FILES_FOLDER/filename
+            
+            if not filepath.exists():
+                raise FileNotFoundError("File '{}' doesn't exist.".format(str(filepath)))
+            
+            other_experiment_metadata_json = utils.load_json(str(Path(self.parent_folder)/uuid/METADATA_JSON_FILENAME))
+            if other_experiment_metadata_json['status'] == 'running':
+                raise ValueError("Loading from a running experiment is not allowed. Other experiment's UUID: {}".format(uuid))
+
+            with utils.UpdateJsonFile(str(self.path/METADATA_JSON_FILENAME)) as metadata:
+                if uuid not in metadata['fileDependencies']:
+                    metadata['fileDependencies'][uuid] = []
+
+                if filename not in metadata['fileDependencies'][uuid]:
+                    metadata['fileDependencies'][uuid].append(filename)
 
         return open(str(filepath), mode)
 
@@ -142,6 +174,8 @@ def create_metadata_json(path, name, tags):
         'arguments': sys.argv[1:],
         'pythonVersion': sys.version,
         'parameters': {},
+        'scalars': {},
+        'fileDependencies': {},
     }   
 
     utils.dump_json(metadata, str(path/METADATA_JSON_FILENAME))

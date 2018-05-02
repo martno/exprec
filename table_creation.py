@@ -27,7 +27,7 @@ def create_table_from_uuids(uuids, path):
     for uuid in uuids:
         metadata_json_path = path/uuid/METADATA_JSON_FILENAME
         metadata = utils.load_json(str(metadata_json_path))
-        procedure_item_by_column = create_procedure_item_by_column(uuid, path, metadata)
+        procedure_item_by_column = create_procedure_item_by_column(uuid, path/uuid, metadata)
         procedure_item_by_column_list.append(procedure_item_by_column)
 
     return html_utils.create_table(COLUMNS, procedure_item_by_column_list)

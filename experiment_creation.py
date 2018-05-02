@@ -72,11 +72,7 @@ def create_summary(uuid, path, experiment_json):
 
     tags = sorted(experiment_json['tags'])
 
-    file_space = utils.get_total_size(str(path/c.FILES_FOLDER))
-    if file_space > 0:
-        file_space = natural.size.decimalsize(file_space)
-    else:
-        file_space = None
+    parents = get_parents(experiment_json)
 
     items = [
         ('Status', html_utils.get_status_icon_tag(status) + ' ' + status),
@@ -89,7 +85,8 @@ def create_summary(uuid, path, experiment_json):
         ('Tags', ' '.join([html_utils.badge(tag) for tag in tags])),
         ('Python version', experiment_json['pythonVersion']),
         ('Arguments', ' '.join(experiment_json['arguments'])),
-        ('File space', utils.get_file_space_representation(str(path/c.FILES_FOLDER)))
+        ('File space', utils.get_file_space_representation(str(path/c.FILES_FOLDER))),
+        ('Parents', html_utils.monospace(' '.join(parents))),
     ]
     
     item_by_column_list = [{'Name': name, 'Value': value} for name, value in items]
@@ -162,3 +159,6 @@ def create_charts(experiment_json):
 
     return html
 
+
+def get_parents(experiment_json):
+    return list(experiment_json['fileDependencies'].keys())
