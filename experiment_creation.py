@@ -38,6 +38,7 @@ def create_experiment_div(uuid):
         content_by_tab_name[icon_title('terminal', 'Output')] = html_utils.margin(create_output(path))
         content_by_tab_name[icon_title('code', 'Code')] = html_utils.margin(create_code(path, experiment_json))
         content_by_tab_name[icon_title('cube', 'Packages')] = html_utils.margin(create_packages(path))
+        content_by_tab_name[icon_title('chart-bar', 'Parameters')] = html_utils.margin(create_parameters(experiment_json))
 
         tabs_html = html_utils.create_tabs(content_by_tab_name, tabs_id='experiment-tabs')
 
@@ -114,3 +115,9 @@ def create_output(path):
     
     return html_utils.monospace(output)
 
+
+def create_parameters(experiment_json):
+    params = experiment_json['parameters']
+
+    param_list = [{'Parameter': name, 'Value': str(params[name])} for name in sorted(list(params.keys()))]
+    return html_utils.create_table(['Parameter', 'Value'], param_list, [[], [('style', 'width: 100%;')]])

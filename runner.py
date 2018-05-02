@@ -82,6 +82,11 @@ class Experiment:
         self.stdout_logfile.close()
         self.stderr_logfile.close()
         self.stdcombined_logfile.close()
+    
+    def set_parameter(self, name, value):
+        json_path = self.path / METADATA_JSON_FILENAME
+        with utils.UpdateJsonFile(str(json_path)) as metadata_json:
+            metadata_json['parameters'][name] = value
 
 
 def is_name_available(name, folder):
@@ -127,6 +132,7 @@ def create_metadata_json(path, name, tags):
         'filename': sys.argv[0],
         'arguments': sys.argv[1:],
         'pythonVersion': sys.version,
+        'parameters': {},
     }   
 
     utils.dump_json(metadata, str(path/METADATA_JSON_FILENAME))
