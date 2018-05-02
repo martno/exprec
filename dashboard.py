@@ -4,10 +4,7 @@ from pathlib import Path
 
 import table_creation
 import experiment_creation
-
-
-DEFAULT_PARENT_FOLDER = '.procedures'
-METADATA_JSON_FILENAME = 'experiment.json'
+import constants as c
 
 
 def main():
@@ -20,10 +17,14 @@ def main():
     @app.route('/js/<path:path>')
     def send_js(path):
         return send_from_directory('js', path)
+
+    @app.route('/css/<path:path>')
+    def send_css(path):
+        return send_from_directory('css', path)
     
     @app.route('/main')
     def get_main():
-        path = Path(DEFAULT_PARENT_FOLDER)
+        path = Path(c.DEFAULT_PARENT_FOLDER)
 
         uuids = get_uuids(path)
         table = table_creation.create_table_from_uuids(uuids, path)
@@ -37,7 +38,7 @@ def main():
 
 
 def get_uuids(path):
-    metadata_json_paths = path.glob('*/' + METADATA_JSON_FILENAME)
+    metadata_json_paths = path.glob('*/' + c.METADATA_JSON_FILENAME)
     return [json_path.parent.parts[-1] for json_path in metadata_json_paths]
 
 

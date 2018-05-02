@@ -5,13 +5,12 @@ $( document ).ready(() => {
     console.log( "Ready!" );
 
     loadMain();
-
 });
 
 
 function loadMain() {
     $("#main").load('/main', () => {
-        console.log('loaded!')
+        console.log('#main loaded!')
         $(".experiment-button").click(function() {
             var buttonId = $(this).attr('id');
             console.log(buttonId);
@@ -24,9 +23,19 @@ function loadMain() {
                     $('#main').show();
                     $('#experiments-div').html('');
                 });
+                
+                highlightAllCode();
             });
         });
     });
+}
+
+
+function highlightAllCode() {
+    $('pre > code').each(function() {
+        hljs.highlightBlock(this);
+        hljs.lineNumbersBlock(this);
+   });
 }
 
 
@@ -53,3 +62,4 @@ function getMethods(obj) {
     }
     return result;
 }
+

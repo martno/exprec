@@ -12,7 +12,7 @@ import subprocess
 import utils
 
 
-DEFAULT_PARENT_FOLDER = '.procedures'
+DEFAULT_PARENT_FOLDER = '.experiments'
 
 METADATA_JSON_FILENAME = 'experiment.json'
 PACKAGES_FILENAME = 'pip_freeze.txt'

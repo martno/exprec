@@ -1,5 +1,6 @@
 import attr
 import json
+import datetime
 
 
 @attr.s
@@ -31,3 +32,7 @@ def load_json(path):
 def dump_json(json_data, path):
     with open(path, 'w') as fp:
         json.dump(json_data, fp, ensure_ascii=False, indent=4)
+
+
+def floor_timedelta(td):
+    return datetime.timedelta(days=td.days, seconds=td.seconds)

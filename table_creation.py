@@ -19,11 +19,6 @@ COLUMNS = [
     'ID',
 ]
 
-ICON_BY_STATUS = {
-    'running': 'fas fa-play text-primary',
-    'succeeded': 'fas fa-check text-success',
-    'failed': 'fas fa-times text-danger',
-}
 
 
 def create_table_from_uuids(uuids, path):
@@ -34,7 +29,7 @@ def create_table_from_uuids(uuids, path):
         procedure_item_by_column = create_procedure_item_by_column(uuid, metadata)
         procedure_item_by_column_list.append(procedure_item_by_column)
 
-    return create_table(COLUMNS, procedure_item_by_column_list)
+    return html_utils.create_table(COLUMNS, procedure_item_by_column_list)
 
 
 def create_procedure_item_by_column(uuid, metadata):
@@ -46,13 +41,14 @@ def create_procedure_item_by_column(uuid, metadata):
         duration = datetime.datetime.now() - start
     else:
         duration = end - start
+    duration = utils.floor_timedelta(duration)
 
     status = metadata['status']
     tags = sorted(metadata['tags'])
 
     procedure_item_by_column = {
         'Select': "<button class='btn btn-primary experiment-button' id='button-{}'>Show</button>".format(uuid),
-        'Status': html_utils.icon(ICON_BY_STATUS[status]),
+        'Status': html_utils.get_status_icon_tag(status),
         'Name': name if len(name) > 0 else None,
         'Filename': html_utils.monospace(metadata['filename']),
         'Duration': str(duration),
@@ -74,31 +70,4 @@ def list_join(lst, item):
 
 def flatten(lst):
     return sum(lst, [])
-
-
-def create_table(columns, item_by_column_list):
-    doc, tag, text = Doc().tagtext()
-
-    with tag('table', klass='table'):
-        with tag('thead'):
-            with tag('tr'):
-                for column in columns:
-                    with tag('th', scope='col'):
-                        doc.asis(get(column, 'N/A'))
-
-        with tag('tbody'):
-            for item_by_column in item_by_column_list:
-                with tag('tr'):
-                    for column in columns:
-                        with tag('td'):
-                            item = get(item_by_column[column], 'N/A')
-                            doc.asis(item)
-
-    return doc.getvalue()            
-
-
-def get(value, default):
-    if value is None:
-        return default
-    return value
 

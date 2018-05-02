@@ -1,0 +1,25 @@
+/* for block of numbers */
+td.hljs-ln-numbers {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    text-align: right;
+    color: #ccc;
+    border-right: 2px solid #CCC;
+    vertical-align: right;
+    padding-right: 5px;
+}
+
+/* for block of code */
+td.hljs-ln-code {
+    padding-left: 10px;
+}
+
+hr {
+    padding: 0px;
+    margin: 5px;    
+}
