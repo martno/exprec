@@ -1,6 +1,8 @@
 import attr
 import json
 import datetime
+import os
+import natural.size
 
 
 @attr.s
@@ -36,3 +38,23 @@ def dump_json(json_data, path):
 
 def floor_timedelta(td):
     return datetime.timedelta(days=td.days, seconds=td.seconds)
+
+
+def get_file_space_representation(root):
+    file_space = get_total_size(root)
+    if file_space > 0:
+        file_space = natural.size.decimalsize(file_space)
+    else:
+        file_space = None
+    
+    return file_space
+
+
+def get_total_size(root):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(root):
+        for filename in filenames:
+            filepath = os.path.join(dirpath, filename)
+            total_size += os.path.getsize(filepath)
+
+    return total_size

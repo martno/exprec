@@ -36,7 +36,7 @@ def create_experiment_div(uuid):
         doc.stag('hr')
 
         content_by_tab_name = collections.OrderedDict()
-        content_by_tab_name[icon_title('eye', 'Summary')] = html_utils.margin(create_summary(uuid, experiment_json))
+        content_by_tab_name[icon_title('eye', 'Summary')] = html_utils.margin(create_summary(uuid, path, experiment_json))
         content_by_tab_name[icon_title('terminal', 'Output')] = html_utils.margin(create_output(path))
         content_by_tab_name[icon_title('code', 'Code')] = html_utils.margin(create_code(path, experiment_json))
         content_by_tab_name[icon_title('cube', 'Packages')] = html_utils.margin(create_packages(path))
@@ -54,7 +54,7 @@ def icon_title(icon_name, title):
     return html_utils.fa_icon(icon_name) + ' ' + title
 
 
-def create_summary(uuid, experiment_json):
+def create_summary(uuid, path, experiment_json):
     doc, tag, text = Doc().tagtext()
 
     columns = ['Name', 'Value']
@@ -72,17 +72,24 @@ def create_summary(uuid, experiment_json):
 
     tags = sorted(experiment_json['tags'])
 
+    file_space = utils.get_total_size(str(path/c.FILES_FOLDER))
+    if file_space > 0:
+        file_space = natural.size.decimalsize(file_space)
+    else:
+        file_space = None
+
     items = [
         ('Status', html_utils.get_status_icon_tag(status) + ' ' + status),
         ('Name', experiment_json['name']),
         ('ID', html_utils.monospace(uuid)),
         ('Start', start.strftime('%Y-%m-%d %H:%M:%S')),
-        ('End', end.strftime('%Y-%m-%d %H:%M:%S')),
+        ('End', end.strftime('%Y-%m-%d %H:%M:%S')) if end is not None else None,
         ('Duration', str(duration)),
         ('Filename', experiment_json['filename']),
         ('Tags', ' '.join([html_utils.badge(tag) for tag in tags])),
         ('Python version', experiment_json['pythonVersion']),
         ('Arguments', ' '.join(experiment_json['arguments'])),
+        ('File space', utils.get_file_space_representation(str(path/c.FILES_FOLDER)))
     ]
     
     item_by_column_list = [{'Name': name, 'Value': value} for name, value in items]

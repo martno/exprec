@@ -1,7 +1,5 @@
 import datetime
 from yattag import Doc
-import natural.size
-import os
 
 import utils
 import html_utils
@@ -22,7 +20,6 @@ COLUMNS = [
     'File space',
     'ID',
 ]
-
 
 
 def create_table_from_uuids(uuids, path):
@@ -50,11 +47,7 @@ def create_procedure_item_by_column(uuid, path, metadata):
     status = metadata['status']
     tags = sorted(metadata['tags'])
 
-    file_space = get_total_size(str(path/c.FILES_FOLDER))
-    if file_space > 0:
-        file_space = natural.size.decimalsize(file_space)
-    else:
-        file_space = None
+    file_space = utils.get_file_space_representation(str(path/c.FILES_FOLDER))
 
     procedure_item_by_column = {
         'Select': "<button class='btn btn-primary experiment-button' id='button-{}'>Show</button>".format(uuid),
@@ -81,14 +74,3 @@ def list_join(lst, item):
 
 def flatten(lst):
     return sum(lst, [])
-
-
-def get_total_size(root):
-    total_size = 0
-    for dirpath, dirnames, filenames in os.walk(root):
-        for filename in filenames:
-            filepath = os.path.join(dirpath, filename)
-            total_size += os.path.getsize(filepath)
-
-    return total_size
-
