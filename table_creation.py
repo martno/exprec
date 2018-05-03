@@ -10,6 +10,7 @@ METADATA_JSON_FILENAME = 'experiment.json'
 
 COLUMNS = [
     'Select',
+    'Show',
     'Status',
     'Name',
     'Filename',
@@ -50,7 +51,8 @@ def create_procedure_item_by_column(uuid, path, metadata):
     file_space = utils.get_file_space_representation(str(path/c.FILES_FOLDER))
 
     procedure_item_by_column = {
-        'Select': "<button class='btn btn-primary experiment-button' id='button-{}'>Show</button>".format(uuid),
+        'Select': '<input class="experiment-row" type="checkbox" value="" id="checkbox-{}">'.format(uuid),
+        'Show': "<button class='btn btn-primary experiment-button' id='button-{}'>Show</button>".format(uuid),
         'Status': html_utils.get_status_icon_tag(status),
         'Name': name if len(name) > 0 else None,
         'Filename': html_utils.monospace(metadata['filename']),

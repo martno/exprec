@@ -17,7 +17,7 @@ def create_experiment_div(uuid):
 
     doc, tag, text = Doc().tagtext()
     with tag('div'):
-        with tag('button', klass="btn btn-primary go-back", style="width: 61px;"):
+        with tag('button', klass="btn btn-primary button-go-back", style="width: 61px;"):
             doc.asis(html_utils.icon('fas fa-chevron-left'))
         doc.stag('hr')
         with tag('h5'):

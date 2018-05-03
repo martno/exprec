@@ -1,16 +1,25 @@
 "use strict";
 
 
-$( document ).ready(() => {
-    console.log( "Ready!" );
-
+$( document ).ready(function() {
     loadMain();
+
+    $('.button-archive').click(function() {
+        $('.experiment-row').each(function() {
+            if ($(this).is(':checked')) {
+                var checkboxId = $(this).attr('id');
+                var id = checkboxId.replace('checkbox-', '');
+                var promise = postJson('/add_tags/' + id, ["archive"]);
+            }
+        });
+    });
 });
 
 
 function loadMain() {
-    $("#main").load('/main', () => {
-        console.log('#main loaded!')
+    $("#experiment-table").load('/experiment-table', function() {
+        console.log('#experiment-table loaded!');
+
         $(".experiment-button").click(function() {
             var buttonId = $(this).attr('id');
             console.log(buttonId);
@@ -19,7 +28,7 @@ function loadMain() {
 
             $('#experiments-div').load('/experiment/' + id, function() {
                 $('#main').hide();
-                $('.go-back').click(function() {
+                $('.button-go-back').click(function() {
                     $('#main').show();
                     $('#experiments-div').html('');
                 });
@@ -36,6 +45,18 @@ function highlightAllCode() {
         hljs.highlightBlock(this);
         hljs.lineNumbersBlock(this);
    });
+}
+
+
+function postJson(url, data) {
+    var promise = $.ajax({
+        type: "POST",
+        url: url,
+        data: JSON.stringify(data),
+        contentType: 'application/json; charset=utf-8',
+    });
+
+    return promise;
 }
 
 

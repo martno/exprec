@@ -1,10 +1,12 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, request
 from yattag import Doc
 from pathlib import Path
+import json
 
 import table_creation
 import experiment_creation
 import constants as c
+import utils
 
 
 def main():
@@ -22,7 +24,7 @@ def main():
     def send_css(path):
         return send_from_directory('css', path)
     
-    @app.route('/main')
+    @app.route('/experiment-table')
     def get_main():
         path = Path(c.DEFAULT_PARENT_FOLDER)
 
@@ -33,6 +35,17 @@ def main():
     @app.route('/experiment/<id>')
     def experiment(id):
         return experiment_creation.create_experiment_div(id)
+
+    @app.route('/add_tags/<id>', methods=['POST'])
+    def add_tags(id):
+        experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/id/c.METADATA_JSON_FILENAME
+
+        with utils.UpdateJsonFile(str(experiment_json_path)) as experiment_json:
+            for tag in request.json:
+                if tag not in experiment_json['tags']:
+                    experiment_json['tags'].append(tag)
+        
+        return json.dumps(experiment_json['tags'])
 
     app.run(debug=True)
 
