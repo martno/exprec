@@ -4,12 +4,22 @@
 $( document ).ready(function() {
     loadMain([], ['archive']);
 
+    addTags();
+
     $('.button-archive').click(function() {
         $('.experiment-row').each(function() {
+            var atLeastOneArchived = false;
+
             if ($(this).is(':checked')) {
                 var checkboxId = $(this).attr('id');
                 var id = checkboxId.replace('checkbox-', '');
                 var promise = postJson('/add_tags/' + id, ["archive"]);
+
+                atLeastOneArchived = true;
+            }
+
+            if (atLeastOneArchived) {
+                loadMain([], ['archive']);
             }
         });
     });
@@ -50,6 +60,21 @@ function loadMain(whitelist, blacklist) {
                 highlightAllCode();
             });
         });
+    });
+}
+
+
+function addTags() {
+    $.get('/alltags', function(tags) {
+        console.log(tags)
+        for (let tag of tags) {
+            var tag_html = '<button type="button" class="btn btn-link btn-sm text-left" style="width: 120px;" id="tag-' + tag + '">' + tag + '</button><br>';
+            $('#tag-buttons').append(tag_html);
+
+            $('#tag-' + tag).click(function() {
+                loadMain([tag], []);
+            });
+        }
     });
 }
 

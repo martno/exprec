@@ -1,4 +1,8 @@
 from yattag import Doc
+from pathlib import Path
+
+import constants as c
+import utils
 
 
 ICON_BY_STATUS = {
@@ -101,3 +105,19 @@ def code(code_string, language=None):
 def margin(html, amount='10px'):
     return '<div style="margin: {}">{}</div>'.format(amount, html)
 
+
+def get_all_tags(uuids):
+    all_tags = []
+
+    for uuid in uuids:
+        experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/uuid/c.METADATA_JSON_FILENAME
+        experiment_json = utils.load_json(str(experiment_json_path))
+
+        all_tags += experiment_json['tags']
+    
+    all_tags = sorted(list(set(all_tags)))
+
+    if 'archive' in all_tags:
+        all_tags.remove('archive')
+
+    return all_tags
