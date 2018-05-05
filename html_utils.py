@@ -45,14 +45,14 @@ def create_table(columns, item_by_column_list, id, attrs=None):
             with tag('tr'):
                 for column in columns:
                     with tag('th', scope='col'):
-                        doc.asis(get(column, 'N/A'))
+                        doc.asis(column)
 
         with tag('tbody'):
             for item_by_column in item_by_column_list:
                 with tag('tr'):
                     for column, attr in zip(columns, attrs):
                         with tag('td', *attr):
-                            item = get(item_by_column[column], 'N/A')
+                            item = get(item_by_column[column], '<div style="color: #B2B2B2;">N/A</div>')
                             doc.asis(item)
 
     return doc.getvalue()            
