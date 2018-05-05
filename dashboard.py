@@ -2,6 +2,7 @@ from flask import Flask, send_from_directory, request, jsonify
 from yattag import Doc
 from pathlib import Path
 import json
+import shutil
 
 import table_creation
 import experiment_creation
@@ -42,9 +43,18 @@ def main():
 
         return jsonify(all_tags)
 
-    @app.route('/experiment/<id>')
+    @app.route('/experiment/<id>', methods=['GET', 'DELETE'])
     def experiment(id):
-        return experiment_creation.create_experiment_div(id)
+        if request.method == 'GET':
+            return experiment_creation.create_experiment_div(id)
+
+        elif request.method == 'DELETE':
+            experiment_path = str(Path(c.DEFAULT_PARENT_FOLDER)/id)
+            shutil.rmtree(experiment_path)
+            return id
+
+        else:
+            raise ValueError('Unknown method: ' + request.method)
 
     @app.route('/add_tags/<id>', methods=['POST'])
     def add_tags(id):

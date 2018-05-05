@@ -13,12 +13,30 @@ $( document ).ready(function() {
             if ($(this).is(':checked')) {
                 var checkboxId = $(this).attr('id');
                 var id = checkboxId.replace('checkbox-', '');
-                var promise = postJson('/add_tags/' + id, ["archive"]);
+                var _ = postJson('/add_tags/' + id, ["archive"]);
 
                 atLeastOneArchived = true;
             }
 
             if (atLeastOneArchived) {
+                loadMain([], ['archive']);
+            }
+        });
+    });
+
+    $('.button-delete').click(function() {
+        $('.experiment-row').each(function() {
+            var atLeastOneDeleted = false;
+
+            if ($(this).is(':checked')) {
+                var checkboxId = $(this).attr('id');
+                var id = checkboxId.replace('checkbox-', '');
+                var _ = deleteRequest('/experiment/' + id);
+
+                atLeastOneDeleted = true;
+            }
+
+            if (atLeastOneDeleted) {
                 loadMain([], ['archive']);
             }
         });
@@ -32,6 +50,14 @@ $( document ).ready(function() {
         loadMain(['archive'], []);
     });
 });
+
+
+function deleteRequest(url) {
+    return $.ajax({
+        url: url,
+        type: 'DELETE',
+    });
+}
 
 
 function loadMain(whitelist, blacklist) {
