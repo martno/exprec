@@ -11,6 +11,9 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
+
     <link rel="stylesheet" href="css/mystyle.css"/>
 
     <title>Experiments</title>
@@ -20,20 +23,32 @@
         <h2>Experiments</h2>
         
         <div id="sidebar" style="min-width: 200px; display: table-cell;">
-          <br>
-          <button id="show-inbox" class="btn btn-outline-primary button-inbox" style="width: 120px;"><i class="fas fa-inbox"></i> Inbox</button>
-          <br>
-          <button id="show-archive" class="btn btn-outline-primary button-inbox" style="width: 120px;"><i class="fas fa-archive"></i> Archive</button>
-          <br><br>
-          <h5><i class="fas fa-tags"></i> Tags</h5>
-          <div id="tag-buttons"></div>
+          <ul class="nav nav-tabs" id="sidebar-tabs" role="tablist">
+            <li class="nav-item">
+              <a data-toggle="pill" class="nav-link active text-center" href="#sidebar-filter" role="tab" style="width: 75px;"><i class="fas fa-filter"></i></a>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div id="sidebar-filter" role="tabpanel" class="tab-pane active">
+                <br>
+                <button id="show-inbox" class="btn btn-outline-primary button-inbox" style="width: 120px;"><i class="fas fa-inbox"></i> Inbox</button>
+                <br>
+                <button id="show-archive" class="btn btn-outline-primary button-inbox" style="width: 120px;"><i class="fas fa-archive"></i> Archive</button>
+                <br><br>
+                <h5><i class="fas fa-tags"></i> Tags</h5>
+                <div id="tag-buttons"></div>
+            </div>
+          </div>
         </div>
+
+        <div style="min-width: 10px; display: table-cell;"></div>
 
         <div id="main-window" style="width: 100%; display: table-cell;">
           <div id="main">
             <button class="btn btn-primary button-archive" style="width: 61px;"><i class="fas fa-archive"></i></button>
             <hr>
-            <div id="experiment-table"></div>
+            <div id="experiment-table-div"></div>
           </div>
 
           <div id="experiments-div"></div>
@@ -51,6 +66,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.3.0/highlightjs-line-numbers.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     <script>hljs.initLineNumbersOnLoad();</script>
+
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js "></script>
 
     <script src="js/main.js"></script>
   </body>

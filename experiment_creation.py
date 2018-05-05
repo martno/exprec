@@ -91,7 +91,7 @@ def create_summary(uuid, path, experiment_json):
     
     item_by_column_list = [{'Name': name, 'Value': value} for name, value in items]
 
-    return html_utils.create_table(columns, item_by_column_list, [[], [('style', 'width: 100%;')]])
+    return html_utils.create_table(columns, item_by_column_list, id='summary-table', attrs=[[], [('style', 'width: 100%;')]])
 
 
 def create_packages(path):
@@ -127,7 +127,7 @@ def create_parameters(experiment_json):
     params = experiment_json['parameters']
 
     param_list = [{'Parameter': name, 'Value': str(params[name])} for name in sorted(list(params.keys()))]
-    return html_utils.create_table(['Parameter', 'Value'], param_list, [[], [('style', 'width: 100%;')]])
+    return html_utils.create_table(['Parameter', 'Value'], param_list, id='parameter-table', attrs=[[], [('style', 'width: 100%;')]])
 
 
 def create_charts(experiment_json):

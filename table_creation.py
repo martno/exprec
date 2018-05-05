@@ -1,5 +1,6 @@
 import datetime
 from yattag import Doc
+from pathlib import Path
 
 import utils
 import html_utils
@@ -24,6 +25,10 @@ COLUMNS = [
 
 
 def create_table_from_uuids(uuids, path, filters):
+    path = Path(c.DEFAULT_PARENT_FOLDER)
+    uuids = utils.get_uuids(path)
+    all_columns = utils.get_all_columns(uuids)
+
     procedure_item_by_column_list = []
     for uuid in uuids:
         metadata_json_path = path/uuid/METADATA_JSON_FILENAME
@@ -32,10 +37,10 @@ def create_table_from_uuids(uuids, path, filters):
         if not show_experiment(metadata, filters):
             continue
 
-        procedure_item_by_column = create_procedure_item_by_column(uuid, path/uuid, metadata)
+        procedure_item_by_column = create_procedure_item_by_column(uuid, path/uuid, metadata, all_columns)
         procedure_item_by_column_list.append(procedure_item_by_column)
     
-    return html_utils.create_table(COLUMNS, procedure_item_by_column_list)
+    return html_utils.create_table(COLUMNS + all_columns, procedure_item_by_column_list, id='experiment-table')
 
 
 def show_experiment(metadata, filters):
@@ -53,7 +58,7 @@ def show_experiment(metadata, filters):
     return any(tag in whitelist for tag in tags)
 
 
-def create_procedure_item_by_column(uuid, path, metadata):
+def create_procedure_item_by_column(uuid, path, metadata, extra_columns):
     name = metadata['name']
     start = datetime.datetime.strptime(metadata['startedDatetime'], "%Y-%m-%dT%H:%M:%S.%f")
     end = None if metadata['endedDatetime'] is None else datetime.datetime.strptime(metadata['endedDatetime'], "%Y-%m-%dT%H:%M:%S.%f")
@@ -82,6 +87,15 @@ def create_procedure_item_by_column(uuid, path, metadata):
         'File space': file_space,
         'ID': html_utils.monospace(uuid),
     }
+
+    scalars = metadata['scalars']
+    for extra_column in extra_columns:
+        if extra_column in scalars:
+            value = str(scalars[extra_column][-1]['value'])
+        else:
+            value = None
+        
+        procedure_item_by_column[extra_column] = value
 
     return procedure_item_by_column
 

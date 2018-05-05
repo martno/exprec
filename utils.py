@@ -3,6 +3,9 @@ import json
 import datetime
 import os
 import natural.size
+from pathlib import Path
+
+import constants as c
 
 
 @attr.s
@@ -58,3 +61,39 @@ def get_total_size(root):
             total_size += os.path.getsize(filepath)
 
     return total_size
+
+
+def get_uuids(path):
+    metadata_json_paths = path.glob('*/' + c.METADATA_JSON_FILENAME)
+    return [json_path.parent.parts[-1] for json_path in metadata_json_paths]
+
+
+def get_all_tags(uuids):
+    all_tags = []
+
+    for uuid in uuids:
+        experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/uuid/c.METADATA_JSON_FILENAME
+        experiment_json = load_json(str(experiment_json_path))
+
+        all_tags += experiment_json['tags']
+    
+    all_tags = sorted(list(set(all_tags)))
+
+    if 'archive' in all_tags:
+        all_tags.remove('archive')
+
+    return all_tags
+
+
+def get_all_columns(uuids):
+    all_columns = []
+
+    for uuid in uuids:
+        experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/uuid/c.METADATA_JSON_FILENAME
+        experiment_json = load_json(str(experiment_json_path))
+
+        all_columns += list(experiment_json['scalars'].keys())
+    
+    all_columns = sorted(list(set(all_columns)))
+
+    return all_columns

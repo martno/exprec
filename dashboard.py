@@ -30,17 +30,15 @@ def main():
         filters = request.json
         path = Path(c.DEFAULT_PARENT_FOLDER)
 
-        uuids = get_uuids(path)
+        uuids = utils.get_uuids(path)
         table = table_creation.create_table_from_uuids(uuids, path, filters)
         return table
 
     @app.route('/alltags', methods=['GET'])
     def alltags():
         path = Path(c.DEFAULT_PARENT_FOLDER)
-        uuids = get_uuids(path)
-        all_tags = html_utils.get_all_tags(uuids)
-
-        print(all_tags)
+        uuids = utils.get_uuids(path)
+        all_tags = utils.get_all_tags(uuids)
 
         return jsonify(all_tags)
 
@@ -62,9 +60,6 @@ def main():
     app.run(debug=True)
 
 
-def get_uuids(path):
-    metadata_json_paths = path.glob('*/' + c.METADATA_JSON_FILENAME)
-    return [json_path.parent.parts[-1] for json_path in metadata_json_paths]
 
 
 if __name__ == "__main__":

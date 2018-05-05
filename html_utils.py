@@ -33,14 +33,14 @@ def get_status_icon_tag(status):
     return icon(ICON_BY_STATUS[status])
 
 
-def create_table(columns, item_by_column_list, attrs=None):
+def create_table(columns, item_by_column_list, id, attrs=None):
     if attrs is None:
         attrs = [{} for _ in range(len(columns))]
     assert len(attrs) == len(columns), (len(attrs), len(columns))
 
     doc, tag, text = Doc().tagtext()
 
-    with tag('table', klass='table'):
+    with tag('table', klass='table', id=id):
         with tag('thead'):
             with tag('tr'):
                 for column in columns:
@@ -104,20 +104,3 @@ def code(code_string, language=None):
 
 def margin(html, amount='10px'):
     return '<div style="margin: {}">{}</div>'.format(amount, html)
-
-
-def get_all_tags(uuids):
-    all_tags = []
-
-    for uuid in uuids:
-        experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/uuid/c.METADATA_JSON_FILENAME
-        experiment_json = utils.load_json(str(experiment_json_path))
-
-        all_tags += experiment_json['tags']
-    
-    all_tags = sorted(list(set(all_tags)))
-
-    if 'archive' in all_tags:
-        all_tags.remove('archive')
-
-    return all_tags

@@ -41,8 +41,8 @@ function loadMain(whitelist, blacklist) {
     });
 
     promise.done(function(content) {
-        $('#experiment-table').html(content);
-        console.log('#experiment-table loaded!');
+        $('#experiment-table-div').html(content);
+        console.log('#experiment-table-div loaded!');
 
         $(".experiment-button").click(function() {
             var buttonId = $(this).attr('id');
@@ -60,13 +60,20 @@ function loadMain(whitelist, blacklist) {
                 highlightAllCode();
             });
         });
+
+        var table = $('#experiment-table').DataTable({
+            dom: 'Bfrtip',
+            stateSave: true,
+            buttons: [
+                'columnsToggle'
+            ]
+        });
     });
 }
 
 
 function addTags() {
     $.get('/alltags', function(tags) {
-        console.log(tags)
         for (let tag of tags) {
             var tag_html = '<button type="button" class="btn btn-link btn-sm text-left" style="width: 120px;" id="tag-' + tag + '">' + tag + '</button><br>';
             $('#tag-buttons').append(tag_html);
