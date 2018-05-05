@@ -23,15 +23,34 @@ COLUMNS = [
 ]
 
 
-def create_table_from_uuids(uuids, path):
+def create_table_from_uuids(uuids, path, filters):
     procedure_item_by_column_list = []
     for uuid in uuids:
         metadata_json_path = path/uuid/METADATA_JSON_FILENAME
         metadata = utils.load_json(str(metadata_json_path))
+
+        if not show_experiment(metadata, filters):
+            continue
+
         procedure_item_by_column = create_procedure_item_by_column(uuid, path/uuid, metadata)
         procedure_item_by_column_list.append(procedure_item_by_column)
-
+    
     return html_utils.create_table(COLUMNS, procedure_item_by_column_list)
+
+
+def show_experiment(metadata, filters):
+    tags = metadata['tags']
+
+    blacklist = filters['blacklist']
+    whitelist = filters['whitelist']
+
+    if any(tag in blacklist for tag in tags):
+        return False
+
+    if len(whitelist) == 0:
+        return True
+    
+    return any(tag in whitelist for tag in tags)
 
 
 def create_procedure_item_by_column(uuid, path, metadata):

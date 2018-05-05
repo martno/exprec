@@ -24,12 +24,13 @@ def main():
     def send_css(path):
         return send_from_directory('css', path)
     
-    @app.route('/experiment-table')
+    @app.route('/experiment-table', methods=['POST'])
     def get_main():
+        filters = request.json
         path = Path(c.DEFAULT_PARENT_FOLDER)
 
         uuids = get_uuids(path)
-        table = table_creation.create_table_from_uuids(uuids, path)
+        table = table_creation.create_table_from_uuids(uuids, path, filters)
         return table
     
     @app.route('/experiment/<id>')

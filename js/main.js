@@ -2,7 +2,7 @@
 
 
 $( document ).ready(function() {
-    loadMain();
+    loadMain([], ['archive']);
 
     $('.button-archive').click(function() {
         $('.experiment-row').each(function() {
@@ -13,11 +13,25 @@ $( document ).ready(function() {
             }
         });
     });
+
+    $('#show-inbox').click(function() {
+        loadMain([], ['archive']);
+    });
+
+    $('#show-archive').click(function() {
+        loadMain(['archive'], []);
+    });
 });
 
 
-function loadMain() {
-    $("#experiment-table").load('/experiment-table', function() {
+function loadMain(whitelist, blacklist) {
+    var promise = postJson('/experiment-table', {
+        'whitelist': whitelist,
+        'blacklist': blacklist
+    });
+
+    promise.done(function(content) {
+        $('#experiment-table').html(content);
         console.log('#experiment-table loaded!');
 
         $(".experiment-button").click(function() {
