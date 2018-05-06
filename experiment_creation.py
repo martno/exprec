@@ -87,6 +87,7 @@ def create_summary(uuid, path, experiment_json):
         ('Filename', experiment_json['filename']),
         ('Tags', ' '.join([html_utils.badge(tag) for tag in tags])),
         ('Python version', experiment_json['pythonVersion']),
+        ('OS', experiment_json['osVersion']),
         ('Arguments', html_utils.monospace(' '.join(experiment_json['arguments']))),
         ('File space', utils.get_file_space_representation(str(path/c.FILES_FOLDER))),
         ('Parents', html_utils.monospace(' '.join(parents))),

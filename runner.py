@@ -9,6 +9,7 @@ import shutil
 import logging
 import subprocess
 import traceback
+import platform
 
 import utils
 
@@ -181,6 +182,7 @@ def create_metadata_json(path, name, tags):
         'scalars': {},
         'fileDependencies': {},
         'notes': '',
+        'osVersion': '{} {}'.format(platform.system(), platform.release())
     }   
 
     utils.dump_json(metadata, str(path/METADATA_JSON_FILENAME))

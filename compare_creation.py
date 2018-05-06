@@ -23,7 +23,7 @@ def create_compare(source1_name, source2_name, source1_path, source2_path):
     <div>
         <button class="btn btn-primary button-go-back" style="width: 61px;"><i class="fas fa-arrow-left"></i></button>
         <hr>
-        <h6>{source1_name} <i class="fas fa-exchange-alt"></i> {source2_name}</h6>
+        <h5>{source1_name} <i class="fas fa-exchange-alt"></i> {source2_name}</h5>
 
         <div id="diff-div"></div>
     </div>
