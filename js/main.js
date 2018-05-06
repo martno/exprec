@@ -51,6 +51,39 @@ $(document).ready(function() {
     });
 
     $('[data-toggle="tooltip"]').tooltip();
+
+    $('.button-compare').click(function() {
+        var checked = [];
+
+        $('.experiment-row').each(function() {
+            if ($(this).is(':checked')) {
+                var checkboxId = $(this).attr('id');
+                var id = checkboxId.replace('checkbox-', '');
+                checked.push(id);
+            }
+        });
+
+        if (checked.length == 2) {
+            var promise = postJson('/compare-experiments', checked);
+            promise.done(function(result) {
+                var html = result["html"];
+                var diffString = result["diffString"];
+
+                $('#experiments-div').html(html);
+                $('#main').hide();
+                $('.button-go-back').click(function() {
+                    $('#main').show();
+                    $('#experiments-div').html('');
+                });
+
+                var diff2htmlUi = new Diff2HtmlUI({diff: diffString});
+                diff2htmlUi.draw('#diff-div', {inputFormat: 'diff', showFiles: true, matching: 'lines'});
+                diff2htmlUi.highlightCode('#diff-div');
+            });
+        } else {
+            alert("Select two experiments to compare.");
+        }
+    });
 });
 
 

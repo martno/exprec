@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.3.3/diff2html.min.css">
+
     <link rel="stylesheet" href="css/mystyle.css"/>
 
     <title>Experiments</title>
@@ -46,9 +48,12 @@
 
         <div id="main-window" style="width: 100%; display: table-cell;">
           <div id="main">
-            <button class="btn btn-primary button-archive" style="width: 61px;" data-toggle="tooltip" title="Archive"><i class="fas fa-archive"></i></button>
-            <button class="btn btn-primary button-delete" style="width: 61px;" data-toggle="tooltip" title="Delete"><i class="fas fa-trash-alt"></i></button>
-            <button class="btn btn-primary button-delete-files" style="width: 61px;" data-toggle="tooltip" title="Delete files"><i class="fas fa-fire"></i></button>
+            <div class="btn-group" role="group">
+              <button class="btn btn-primary button-archive" style="width: 61px;" data-toggle="tooltip" title="Archive"><i class="fas fa-archive"></i></button>
+              <button class="btn btn-primary button-delete" style="width: 61px;" data-toggle="tooltip" title="Delete"><i class="fas fa-trash-alt"></i></button>
+              <button class="btn btn-primary button-delete-files" style="width: 61px;" data-toggle="tooltip" title="Delete files"><i class="fas fa-fire"></i></button>
+            </div>
+            <button class="btn btn-primary button-compare" style="width: 61px;" data-toggle="tooltip" title="Compare"><i class="fas fa-exchange-alt"></i></button>
             <hr>
             <div id="experiment-table-div"></div>
           </div>
@@ -72,6 +77,9 @@
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.3.3/diff2html.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.3.3/diff2html-ui.min.js"></script>
 
     <script src="js/main.js"></script>
   </body>

@@ -7,6 +7,7 @@ import os
 
 import table_creation
 import experiment_creation
+import compare_creation
 import constants as c
 import utils
 import html_utils
@@ -78,6 +79,12 @@ def main():
 
         return id
 
+    @app.route('/compare-experiments', methods=['POST'])
+    def compare_experiments():
+        experiment_ids = request.json
+        assert len(experiment_ids) == 2, len(experiment_ids)
+        
+        return jsonify(compare_creation.create_compare(*experiment_ids))
 
     @app.route('/add_tags/<id>', methods=['POST'])
     def add_tags(id):
