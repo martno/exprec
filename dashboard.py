@@ -90,6 +90,11 @@ def main():
     def compare_with_local(id):
         return jsonify(compare_creation.compare_with_local(id))
 
+    @app.route('/restore-source-code/<id>')
+    def restore_source_code(id):
+        utils.restore_source_code(id)
+        return id
+
     @app.route('/add_tags/<id>', methods=['POST'])
     def add_tags(id):
         experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/id/c.METADATA_JSON_FILENAME
@@ -102,8 +107,6 @@ def main():
         return json.dumps(experiment_json['tags'])
 
     app.run(debug=True)
-
-
 
 
 if __name__ == "__main__":

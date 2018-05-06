@@ -4,6 +4,7 @@ import datetime
 import os
 import natural.size
 from pathlib import Path
+import shutil
 
 import constants as c
 
@@ -111,3 +112,41 @@ def get_all_parameters(uuids):
     all_params = sorted(list(set(all_params)))
 
     return all_params
+
+
+def restore_source_code(uuid):
+    experiment_source_path = Path(c.DEFAULT_PARENT_FOLDER)/uuid/c.SOURCE_CODE_FOLDER
+    assert experiment_source_path.exists()
+
+    local_python_files = Path('.').glob('**/*.py')
+    local_python_files = remove_hidden_paths(local_python_files)
+
+    for python_file in local_python_files:
+        os.remove(str(python_file))
+    
+    copy_source_code(source_path=experiment_source_path, target_path='.')
+
+
+def copy_source_code(source_path, target_path, extension='*.py'):
+    source_path = Path(source_path)
+    target_path = Path(target_path)
+
+    python_files = source_path.glob('**/' + extension)
+
+    for source_file_path in python_files:
+        python_file = source_file_path.relative_to(source_path)
+        if is_hidden_path(python_file):
+            continue
+
+        target_file_path = target_path/python_file
+
+        target_file_path.parent.mkdir(exist_ok=True)
+        shutil.copy(str(source_file_path), str(target_file_path))
+
+
+def remove_hidden_paths(paths):
+    return [path for path in paths if not is_hidden_path(path)]
+
+
+def is_hidden_path(path):
+    return any(part.startswith('.') for part in path.parts)

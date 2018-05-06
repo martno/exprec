@@ -19,6 +19,9 @@ def create_experiment_div(uuid):
     with tag('div'):
         with tag('button', klass="btn btn-primary button-go-back", style="width: 61px;"):
             doc.asis(html_utils.fa_icon('arrow-left'))
+        text(' ')
+        with tag('button', klass="btn btn-primary button-restore-source-code", style="width: 61px;"):
+            doc.asis(html_utils.fa_icon('file-code'))
         doc.stag('hr')
         with tag('h5'):
             doc.asis(html_utils.get_status_icon_tag(experiment_json['status']))

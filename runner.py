@@ -12,13 +12,13 @@ import traceback
 import platform
 
 import utils
+import constants as c
 
 
 DEFAULT_PARENT_FOLDER = '.experiments'
 
 METADATA_JSON_FILENAME = 'experiment.json'
 PACKAGES_FILENAME = 'pip_freeze.txt'
-SOURCE_CODE_FOLDER = 'src'
 FILES_FOLDER = 'files'
 
 
@@ -163,7 +163,7 @@ class MultiStream:
 def setup_procedure(path, name, tags):
     create_metadata_json(path, name, tags)
     create_pip_freeze_file(path)
-    copy_source_code(path)
+    utils.copy_source_code(source_path='.', target_path=path/c.SOURCE_CODE_FOLDER)
 
 
 def create_metadata_json(path, name, tags):
@@ -194,21 +194,6 @@ def create_pip_freeze_file(path):
 
     with open(str(path/PACKAGES_FILENAME), 'w') as fp:
         fp.write('\n'.join(installed_packages_list))
-
-
-def copy_source_code(path):
-    python_files = Path('.').glob('**/*.py')
-    python_files = [python_filepath for python_filepath in python_files if not is_hidden_path(python_filepath)]
-
-    for python_file in python_files:
-        target_path = path/SOURCE_CODE_FOLDER/python_file
-        target_path.parent.mkdir(exist_ok=True)
-
-        shutil.copy(str(python_file), str(target_path))
-
-
-def is_hidden_path(path):
-    return any(part.startswith('.') for part in path.parts)
 
 
 def uuid1_to_datetime(uuid1):

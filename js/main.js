@@ -19,27 +19,35 @@ $(document).ready(function() {
     });
 
     $('.button-delete').click(function() {
-        $('.experiment-row').each(function() {
-            if ($(this).is(':checked')) {
-                var checkboxId = $(this).attr('id');
-                var id = checkboxId.replace('checkbox-', '');
-                var _ = deleteRequest('/experiment/' + id);
-            }
+        var doDelete = confirm("Do you want to delete all marked experiments?");
 
-            loadMain([], ['archive']);
-        });
+        if (doDelete == true) {
+            $('.experiment-row').each(function() {
+                if ($(this).is(':checked')) {
+                    var checkboxId = $(this).attr('id');
+                    var id = checkboxId.replace('checkbox-', '');
+                    var _ = deleteRequest('/experiment/' + id);
+                }
+
+                loadMain([], ['archive']);
+            });
+        }
     });
 
     $('.button-delete-files').click(function() {
-        $('.experiment-row').each(function() {
-            if ($(this).is(':checked')) {
-                var checkboxId = $(this).attr('id');
-                var id = checkboxId.replace('checkbox-', '');
-                var _ = $.get('/deletefiles/' + id);
-            }
+        var doDeleteFiles = confirm("Do you want to delete all files associated with marked experiments?");
 
-            loadMain([], ['archive']);
-        });
+        if (doDeleteFiles == true) {
+            $('.experiment-row').each(function() {
+                if ($(this).is(':checked')) {
+                    var checkboxId = $(this).attr('id');
+                    var id = checkboxId.replace('checkbox-', '');
+                    var _ = $.get('/deletefiles/' + id);
+                }
+
+                loadMain([], ['archive']);
+            });
+        }
     });
 
     $('#show-inbox').click(function() {
@@ -124,7 +132,17 @@ function loadMain(whitelist, blacklist) {
                     $('#main').show();
                     $('#experiments-div').html('');
                 });
-                
+
+                $('.button-restore-source-code').click(function() {
+                    var doRestore = confirm("Do you want to restore the source code from experiment " + id + "?\nThis will overwrite all local code.");
+                    if (doRestore == true) {
+                        var promise = $.get('/restore-source-code/' + id);
+                        promise.done(function() {
+                            alert(id + ' restored');
+                        });
+                    }
+                });
+
                 highlightAllCode();
             });
         });
