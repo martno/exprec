@@ -3,6 +3,7 @@ from yattag import Doc
 from pathlib import Path
 import json
 import shutil
+import os
 
 import table_creation
 import experiment_creation
@@ -55,6 +56,18 @@ def main():
 
         else:
             raise ValueError('Unknown method: ' + request.method)
+
+    @app.route('/deletefiles/<id>', methods=['GET'])
+    def deletefiles(id):
+        experiment_files_path = Path(c.DEFAULT_PARENT_FOLDER)/id/'files'
+        for path in experiment_files_path.glob('*'):
+            if path.is_dir():
+                shutil.rmtree(str(path))
+            elif path.is_file():
+                os.remove(str(path))
+        
+        return id
+
 
     @app.route('/add_tags/<id>', methods=['POST'])
     def add_tags(id):

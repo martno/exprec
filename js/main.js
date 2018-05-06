@@ -1,44 +1,44 @@
 "use strict";
 
 
-$( document ).ready(function() {
+$(document).ready(function() {
     loadMain([], ['archive']);
 
     addTags();
 
     $('.button-archive').click(function() {
         $('.experiment-row').each(function() {
-            var atLeastOneArchived = false;
-
             if ($(this).is(':checked')) {
                 var checkboxId = $(this).attr('id');
                 var id = checkboxId.replace('checkbox-', '');
                 var _ = postJson('/add_tags/' + id, ["archive"]);
-
-                atLeastOneArchived = true;
             }
 
-            if (atLeastOneArchived) {
-                loadMain([], ['archive']);
-            }
+            loadMain([], ['archive']);
         });
     });
 
     $('.button-delete').click(function() {
         $('.experiment-row').each(function() {
-            var atLeastOneDeleted = false;
-
             if ($(this).is(':checked')) {
                 var checkboxId = $(this).attr('id');
                 var id = checkboxId.replace('checkbox-', '');
                 var _ = deleteRequest('/experiment/' + id);
-
-                atLeastOneDeleted = true;
             }
 
-            if (atLeastOneDeleted) {
-                loadMain([], ['archive']);
+            loadMain([], ['archive']);
+        });
+    });
+
+    $('.button-delete-files').click(function() {
+        $('.experiment-row').each(function() {
+            if ($(this).is(':checked')) {
+                var checkboxId = $(this).attr('id');
+                var id = checkboxId.replace('checkbox-', '');
+                var _ = $.get('/deletefiles/' + id);
             }
+
+            loadMain([], ['archive']);
         });
     });
 
@@ -49,6 +49,8 @@ $( document ).ready(function() {
     $('#show-archive').click(function() {
         loadMain(['archive'], []);
     });
+
+    $('[data-toggle="tooltip"]').tooltip();
 });
 
 
