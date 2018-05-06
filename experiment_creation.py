@@ -36,12 +36,15 @@ def create_experiment_div(uuid):
         doc.stag('hr')
 
         content_by_tab_name = collections.OrderedDict()
-        content_by_tab_name[icon_title('eye', 'Summary')] = html_utils.margin(create_summary(uuid, path, experiment_json))
-        content_by_tab_name[icon_title('terminal', 'Output')] = html_utils.margin(create_output(path))
-        content_by_tab_name[icon_title('code', 'Code')] = html_utils.margin(create_code(path, experiment_json))
-        content_by_tab_name[icon_title('cube', 'Packages')] = html_utils.margin(create_packages(path))
-        content_by_tab_name[icon_title('chart-bar', 'Parameters')] = html_utils.margin(create_parameters(experiment_json))
-        content_by_tab_name[icon_title('chart-area', 'Charts')] = html_utils.margin(create_charts(experiment_json))
+        content_by_tab_name[icon_title('eye', 'Summary')] = create_summary(uuid, path, experiment_json)
+        content_by_tab_name[icon_title('terminal', 'Output')] = create_output(path)
+        content_by_tab_name[icon_title('code', 'Code')] = create_code(path, experiment_json)
+        content_by_tab_name[icon_title('cube', 'Packages')] = create_packages(path)
+        content_by_tab_name[icon_title('chart-bar', 'Parameters')] = create_parameters(experiment_json)
+        content_by_tab_name[icon_title('chart-area', 'Charts')] = create_charts(experiment_json)
+        content_by_tab_name[icon_title('sticky-note', 'Notes')] = create_notes(uuid, experiment_json)
+
+        content_by_tab_name = collections.OrderedDict([(key, html_utils.margin(value)) for key, value in content_by_tab_name.items()])
 
         tabs_html = html_utils.create_tabs(content_by_tab_name, tabs_id='experiment-tabs')
 
@@ -162,3 +165,22 @@ def create_charts(experiment_json):
 
 def get_parents(experiment_json):
     return list(experiment_json['fileDependencies'].keys())
+
+
+def create_notes(uuid, experiment_json):
+    notes = experiment_json['notes']
+
+    html = """
+    <textarea class="form-control" id="notes-textarea" rows="15">{notes}</textarea>
+    <br>
+    <button type="button" class="btn btn-primary" onclick="myFunction()">Save</button>
+
+    <script>
+    function myFunction() {{
+        var notes = $("#notes-textarea").val()
+        postJson("/save-notes/{uuid}", notes);
+    }}
+    </script>
+    """.format(notes=notes, uuid=uuid)
+
+    return html

@@ -68,6 +68,16 @@ def main():
         
         return id
 
+    @app.route('/save-notes/<id>', methods=['POST'])
+    def save_notes(id):
+        notes = request.json
+        experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/id/c.METADATA_JSON_FILENAME
+
+        with utils.UpdateJsonFile(str(experiment_json_path)) as experiment_json:
+            experiment_json['notes'] = notes
+
+        return id
+
 
     @app.route('/add_tags/<id>', methods=['POST'])
     def add_tags(id):

@@ -180,6 +180,7 @@ def create_metadata_json(path, name, tags):
         'parameters': {},
         'scalars': {},
         'fileDependencies': {},
+        'notes': '',
     }   
 
     utils.dump_json(metadata, str(path/METADATA_JSON_FILENAME))
