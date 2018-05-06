@@ -8,6 +8,7 @@ import json
 import shutil
 import logging
 import subprocess
+import traceback
 
 import utils
 
@@ -65,16 +66,19 @@ class Experiment:
         sys.stdout = stdout_stream
         sys.stderr = stderr_stream
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, exc_type, exc_value, tb):
+        reraise_exception = (exc_type is not None) and (exc_type not in self.exceptions_to_ignore)
+        if reraise_exception:
+            traceback.print_exception(exc_type, exc_value, tb)
+
         self._close_streams()
 
         with utils.UpdateJsonFile(str(self.path/METADATA_JSON_FILENAME)) as metadata:
-            succeeded = type is None or type in self.exceptions_to_ignore
-            metadata['status'] = 'succeeded' if succeeded else 'failed'
+            metadata['status'] = 'failed' if reraise_exception else 'succeeded'
             metadata['endedDatetime'] = datetime.datetime.now().isoformat()
 
-        if type is not None:
-            return type in self.exceptions_to_ignore
+        if exc_type is not None:
+            return not reraise_exception
 
     def _close_streams(self):
         sys.stdout = self.stdout
