@@ -63,8 +63,15 @@ $(document).ready(function() {
             }
         });
 
-        if (checked.length == 2) {
-            var promise = postJson('/compare-experiments', checked);
+        if (checked.length == 1 || checked.length == 2) {
+            var promise;
+            if (checked.length == 1) {
+                var uuid = checked[0];
+                promise = $.get('/compare-with-local/' + uuid);
+            } else {
+                promise = postJson('/compare-experiments', checked);
+            }
+
             promise.done(function(result) {
                 var html = result["html"];
                 var diffString = result["diffString"];
@@ -81,7 +88,7 @@ $(document).ready(function() {
                 diff2htmlUi.highlightCode('#diff-div');
             });
         } else {
-            alert("Select two experiments to compare.");
+            alert("Select one or two experiments to compare.");
         }
     });
 });
