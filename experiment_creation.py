@@ -18,7 +18,7 @@ def create_experiment_div(uuid):
     doc, tag, text = Doc().tagtext()
     with tag('div'):
         with tag('button', klass="btn btn-primary button-go-back", style="width: 61px;"):
-            doc.asis(html_utils.icon('fas fa-chevron-left'))
+            doc.asis(html_utils.fa_icon('arrow-left'))
         doc.stag('hr')
         with tag('h5'):
             doc.asis(html_utils.get_status_icon_tag(experiment_json['status']))
@@ -79,16 +79,16 @@ def create_summary(uuid, path, experiment_json):
         ('Name', experiment_json['name']),
         ('ID', html_utils.monospace(uuid)),
         ('Start', start.strftime('%Y-%m-%d %H:%M:%S')),
-        ('End', end.strftime('%Y-%m-%d %H:%M:%S')) if end is not None else None,
+        ('End', end.strftime('%Y-%m-%d %H:%M:%S') if end is not None else None),
         ('Duration', str(duration)),
         ('Filename', experiment_json['filename']),
         ('Tags', ' '.join([html_utils.badge(tag) for tag in tags])),
         ('Python version', experiment_json['pythonVersion']),
-        ('Arguments', ' '.join(experiment_json['arguments'])),
+        ('Arguments', html_utils.monospace(' '.join(experiment_json['arguments']))),
         ('File space', utils.get_file_space_representation(str(path/c.FILES_FOLDER))),
         ('Parents', html_utils.monospace(' '.join(parents))),
     ]
-    
+
     item_by_column_list = [{'Name': name, 'Value': value} for name, value in items]
 
     return html_utils.create_table(columns, item_by_column_list, id='summary-table', attrs=[[], [('style', 'width: 100%;')]])

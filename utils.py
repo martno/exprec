@@ -85,7 +85,7 @@ def get_all_tags(uuids):
     return all_tags
 
 
-def get_all_columns(uuids):
+def get_all_scalars(uuids):
     all_columns = []
 
     for uuid in uuids:
@@ -97,3 +97,17 @@ def get_all_columns(uuids):
     all_columns = sorted(list(set(all_columns)))
 
     return all_columns
+
+
+def get_all_parameters(uuids):
+    all_params = []
+
+    for uuid in uuids:
+        experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/uuid/c.METADATA_JSON_FILENAME
+        experiment_json = load_json(str(experiment_json_path))
+
+        all_params += list(experiment_json['parameters'].keys())
+    
+    all_params = sorted(list(set(all_params)))
+
+    return all_params

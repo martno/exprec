@@ -27,7 +27,8 @@ COLUMNS = [
 def create_table_from_uuids(uuids, path, filters):
     path = Path(c.DEFAULT_PARENT_FOLDER)
     uuids = utils.get_uuids(path)
-    all_columns = utils.get_all_columns(uuids)
+    all_scalars = utils.get_all_scalars(uuids)
+    all_params = utils.get_all_parameters(uuids)    
 
     procedure_item_by_column_list = []
     for uuid in uuids:
@@ -37,10 +38,10 @@ def create_table_from_uuids(uuids, path, filters):
         if not show_experiment(metadata, filters):
             continue
 
-        procedure_item_by_column = create_procedure_item_by_column(uuid, path/uuid, metadata, all_columns)
+        procedure_item_by_column = create_procedure_item_by_column(uuid, path/uuid, metadata, all_scalars, all_params)
         procedure_item_by_column_list.append(procedure_item_by_column)
     
-    return html_utils.create_table(COLUMNS + all_columns, procedure_item_by_column_list, id='experiment-table')
+    return html_utils.create_table(COLUMNS + all_scalars + all_params, procedure_item_by_column_list, id='experiment-table')
 
 
 def show_experiment(metadata, filters):
@@ -58,7 +59,7 @@ def show_experiment(metadata, filters):
     return any(tag in whitelist for tag in tags)
 
 
-def create_procedure_item_by_column(uuid, path, metadata, extra_columns):
+def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_params):
     name = metadata['name']
     start = datetime.datetime.strptime(metadata['startedDatetime'], "%Y-%m-%dT%H:%M:%S.%f")
     end = None if metadata['endedDatetime'] is None else datetime.datetime.strptime(metadata['endedDatetime'], "%Y-%m-%dT%H:%M:%S.%f")
@@ -89,13 +90,22 @@ def create_procedure_item_by_column(uuid, path, metadata, extra_columns):
     }
 
     scalars = metadata['scalars']
-    for extra_column in extra_columns:
-        if extra_column in scalars:
-            value = str(scalars[extra_column][-1]['value'])
+    for name in all_scalars:
+        if name in scalars:
+            value = str(scalars[name][-1]['value'])
         else:
             value = None
         
-        procedure_item_by_column[extra_column] = value
+        procedure_item_by_column[name] = value
+
+    params = metadata['parameters']
+    for name in all_params:
+        if name in params:
+            value = str(params[name])
+        else:
+            value = None
+        
+        procedure_item_by_column[name] = value
 
     return procedure_item_by_column
 
