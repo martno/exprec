@@ -107,7 +107,7 @@ function addTags() {
             $('#tag-buttons').append(tag_html);
 
             $('#tag-' + tag).click(function() {
-                loadMain([tag], []);
+                loadMain([tag], ['archive']);
             });
         }
     });
