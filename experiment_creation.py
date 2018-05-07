@@ -4,6 +4,8 @@ from pathlib import Path
 import datetime
 import plotly.offline as offline
 import plotly.graph_objs as go
+import json
+import cgi
 
 import html_utils
 import constants as c
@@ -41,7 +43,7 @@ def create_experiment_div(uuid):
         content_by_tab_name = collections.OrderedDict()
         content_by_tab_name[icon_title('eye', 'Summary')] = create_summary(uuid, path, experiment_json)
         content_by_tab_name[icon_title('terminal', 'Output')] = create_output(path)
-        content_by_tab_name[icon_title('code', 'Code')] = create_code(path, experiment_json)
+        content_by_tab_name[icon_title('code', 'Code')] = create_code(uuid, path, experiment_json)
         content_by_tab_name[icon_title('cube', 'Packages')] = create_packages(path)
         content_by_tab_name[icon_title('chart-bar', 'Parameters')] = create_parameters(experiment_json)
         content_by_tab_name[icon_title('chart-area', 'Charts')] = create_charts(experiment_json)
@@ -110,13 +112,83 @@ def create_packages(path):
     return html_utils.monospace(pip_freeze)
 
 
-def create_code(path, experiment_json):
+def create_code(uuid, path, experiment_json):
     filename = experiment_json['filename']
 
-    filepath = path/'src'/filename
+    tree = create_tree(root=path/'src', path_to_root=Path('src'), selected_path='{}/{}'.format(c.SOURCE_CODE_FOLDER, filename))
 
-    with filepath.open() as fp:
+    json_string_tree = json.dumps(tree)
+
+    html = """
+    <div>
+        <div id="jstree-code-div" style="min-width: 200px; display: table-cell;"></div>
+        <div id="code-content-div" style="width: 100%; display: table-cell;"></div>
+    </div>
+
+    <script>
+        $('#jstree-code-div').jstree({
+            "types" : {
+                "default" : {
+                    "icon" : "far fa-folder"
+                },
+                "file" : {
+                    "icon" : "far fa-file"
+                }
+            },
+            "plugins" : [ "types" ],
+            'core' : {
+                'data' : JSON_TREE
+            }
+        });
+
+        $('#jstree-code-div').on("changed.jstree", function (e, data) {
+            var selected = data.selected[0];
+            var promise = postJson('/get-code/UUID', selected);
+            promise.done(function(result) {
+                $("#code-content-div").html(result);
+                highlightAllCode();
+            });
+        });
+    </script>
+    """.replace('JSON_TREE', json_string_tree).replace('UUID', uuid)
+
+    return html
+
+
+def create_tree(root, path_to_root, selected_path=None):
+    agg = {
+        'text': root.name,
+        'id': str(path_to_root),
+        'children': [],
+        'state': {
+            'opened': True,
+        }
+    }
+
+    sub_dirs = sorted([directory for directory in root.iterdir() if directory.is_dir()])
+    for sub_dir in sub_dirs:
+        sub_agg = create_tree(sub_dir, path_to_root/sub_dir.name, selected_path)
+        agg['children'].append(sub_agg)
+
+    files = sorted([file for file in root.iterdir() if file.is_file()])
+    for file in files:
+        agg['children'].append({
+            'text': file.name,
+            'id': str(path_to_root/file.name),
+            'type': 'file',
+            'state': {
+                'selected': str(path_to_root/file.name) == selected_path
+            },
+        })
+    
+    return agg
+
+
+def load_code(code_path):
+    with code_path.open() as fp:
         code = fp.read()
+    
+    code = cgi.escape(code)
 
     return html_utils.code(code, language='python')
 

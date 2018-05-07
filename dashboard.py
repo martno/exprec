@@ -95,6 +95,16 @@ def main():
         utils.restore_source_code(id)
         return id
 
+    @app.route('/get-code/<id>', methods=['POST'])
+    def get_code(id):
+        code_path = Path(c.DEFAULT_PARENT_FOLDER)/id/request.json
+        assert code_path.exists(), code_path
+
+        if code_path.is_dir():
+            return ''
+
+        return jsonify(experiment_creation.load_code(code_path))
+
     @app.route('/add_tags/<id>', methods=['POST'])
     def add_tags(id):
         experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/id/c.METADATA_JSON_FILENAME
