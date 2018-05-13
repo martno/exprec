@@ -23,6 +23,14 @@ setuptools.setup(
     long_description=readme,
 
     packages=setuptools.find_packages(include=['exprec']),
+    package_dir={'exprec': 'exprec'},
+    package_data={
+        'exprec': [
+            'index.html',
+            'js/*',
+            'css/*',
+        ],
+    },
 
     install_requires=requirements,
     license="MIT license",
@@ -36,5 +44,5 @@ setuptools.setup(
     ],
     scripts=[
         'bin/exprec',
-    ]
+    ],
 )
