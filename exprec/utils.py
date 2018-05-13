@@ -2,11 +2,11 @@ import attr
 import json
 import datetime
 import os
-import natural.size
+import humanize
 from pathlib import Path
 import shutil
 
-import constants as c
+from exprec import constants as c
 
 
 @attr.s
@@ -47,7 +47,7 @@ def floor_timedelta(td):
 def get_file_space_representation(root):
     file_space = get_total_size(root)
     if file_space > 0:
-        file_space = natural.size.decimalsize(file_space)
+        file_space = humanize.naturalsize(file_space)
     else:
         file_space = None
     

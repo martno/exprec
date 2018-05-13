@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+
+from exprec import dashboard
+
+
+def main():
+    dashboard.dashboard()
+
+
+if __name__ == "__main__":
+    main()

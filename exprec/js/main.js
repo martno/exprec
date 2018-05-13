@@ -152,7 +152,8 @@ function loadMain(whitelist, blacklist) {
             stateSave: true,
             buttons: [
                 'columnsToggle'
-            ]
+            ],
+            "order": [[ 6, "desc" ]]  // 'Start' column
         });
     });
 }

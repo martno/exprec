@@ -1,8 +1,8 @@
 from yattag import Doc
 from pathlib import Path
 
-import constants as c
-import utils
+from exprec import constants as c
+from exprec import utils
 
 
 ICON_BY_STATUS = {

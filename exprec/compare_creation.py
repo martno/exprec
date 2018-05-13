@@ -1,7 +1,7 @@
 import subprocess
 from pathlib import Path
 
-import constants as c
+from exprec import constants as c
 
 
 def compare_experiments(uuid1, uuid2):

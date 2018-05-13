@@ -1,0 +1,7 @@
+include AUTHORS.rst
+include LICENSE
+include README.md
+
+include exprec/index.html
+include exprec/js/
+include exprec/css/

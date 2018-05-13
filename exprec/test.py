@@ -1,4 +1,4 @@
-import runner
+from exprec import runner
 
 
 def main():

@@ -5,15 +5,15 @@ import json
 import shutil
 import os
 
-import table_creation
-import experiment_creation
-import compare_creation
-import constants as c
-import utils
-import html_utils
+from exprec import table_creation
+from exprec import experiment_creation
+from exprec import compare_creation
+from exprec import constants as c
+from exprec import utils
+from exprec import html_utils
 
 
-def main():
+def dashboard():
     app = Flask(__name__)
 
     @app.route('/')
@@ -117,7 +117,3 @@ def main():
         return json.dumps(experiment_json['tags'])
 
     app.run(debug=True)
-
-
-if __name__ == "__main__":
-    main()

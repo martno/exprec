@@ -11,8 +11,8 @@ import subprocess
 import traceback
 import platform
 
-import utils
-import constants as c
+from exprec import utils
+from exprec import constants as c
 
 
 DEFAULT_PARENT_FOLDER = '.experiments'

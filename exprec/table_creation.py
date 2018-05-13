@@ -2,9 +2,9 @@ import datetime
 from yattag import Doc
 from pathlib import Path
 
-import utils
-import html_utils
-import constants as c
+from exprec import utils
+from exprec import html_utils
+from exprec import constants as c
 
 
 METADATA_JSON_FILENAME = 'experiment.json'
@@ -77,7 +77,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
 
     procedure_item_by_column = {
         'Select': '<input class="experiment-row" type="checkbox" value="" id="checkbox-{}">'.format(uuid),
-        'Show': "<button class='btn btn-primary experiment-button' id='button-{}'>Show</button>".format(uuid),
+        'Show': "<button class='btn btn-primary btn-sm experiment-button' id='button-{}'>Show</button>".format(uuid),
         'Status': html_utils.get_status_icon_tag(status),
         'Name': name if len(name) > 0 else None,
         'Filename': html_utils.monospace(metadata['filename']),

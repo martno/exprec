@@ -7,9 +7,9 @@ import plotly.graph_objs as go
 import json
 import cgi
 
-import html_utils
-import constants as c
-import utils
+from exprec import html_utils
+from exprec import constants as c
+from exprec import utils
 
 
 def create_experiment_div(uuid):
@@ -100,7 +100,7 @@ def create_summary(uuid, path, experiment_json):
         ('Arguments', html_utils.monospace(' '.join(experiment_json['arguments']))),
         ('File space', utils.get_file_space_representation(str(path/c.FILES_FOLDER))),
         ('Parents', html_utils.monospace(' '.join(parents))),
-        ('Exception', html_utils.monospace(exception)),
+        ('Exception', html_utils.monospace(exception) if exception is not None else None),
         ('Python version', experiment_json['pythonVersion']),
         ('OS', experiment_json['osVersion']),
     ]
