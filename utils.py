@@ -150,3 +150,7 @@ def remove_hidden_paths(paths):
 
 def is_hidden_path(path):
     return any(part.startswith('.') for part in path.parts)
+
+
+def get_class_name(object):
+    return object.__class__.__name__

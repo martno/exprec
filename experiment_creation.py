@@ -31,12 +31,13 @@ def create_experiment_div(uuid):
             text(uuid)
 
             doc.asis('<span style="display:inline-block; width: 16px;"></span>')
+            text('[{}]'.format(experiment_json['filename']))
+            doc.asis('<span style="display:inline-block; width: 16px;"></span>')
 
             tags = sorted(experiment_json['tags'])
             doc.asis(' '.join([html_utils.badge(tag) for tag in tags]))
-        
-        with tag('small'):
-            text(experiment_json['filename'])
+
+        text(experiment_json['title'])
         
         doc.stag('hr')
 
@@ -82,20 +83,26 @@ def create_summary(uuid, path, experiment_json):
 
     parents = get_parents(experiment_json)
 
+    exception = None
+    if experiment_json['exceptionType'] is not None:
+        exception = '{}: {}'.format(experiment_json['exceptionType'], experiment_json['exceptionValue'])
+
     items = [
         ('Status', html_utils.get_status_icon_tag(status) + ' ' + status),
         ('Name', experiment_json['name']),
         ('ID', html_utils.monospace(uuid)),
+        ('Title', experiment_json['title']),
+        ('Filename', experiment_json['filename']),
+        ('Duration', str(duration)),
         ('Start', start.strftime('%Y-%m-%d %H:%M:%S')),
         ('End', end.strftime('%Y-%m-%d %H:%M:%S') if end is not None else None),
-        ('Duration', str(duration)),
-        ('Filename', experiment_json['filename']),
         ('Tags', ' '.join([html_utils.badge(tag) for tag in tags])),
-        ('Python version', experiment_json['pythonVersion']),
-        ('OS', experiment_json['osVersion']),
         ('Arguments', html_utils.monospace(' '.join(experiment_json['arguments']))),
         ('File space', utils.get_file_space_representation(str(path/c.FILES_FOLDER))),
         ('Parents', html_utils.monospace(' '.join(parents))),
+        ('Exception', html_utils.monospace(exception)),
+        ('Python version', experiment_json['pythonVersion']),
+        ('OS', experiment_json['osVersion']),
     ]
 
     item_by_column_list = [{'Name': name, 'Value': value} for name, value in items]
@@ -244,19 +251,28 @@ def get_parents(experiment_json):
 
 
 def create_notes(uuid, experiment_json):
+    title = experiment_json['title']
     notes = experiment_json['notes']
 
     html = """
+    Title: <input type="text" id="title-input" class="form-control" value="{title}">
+    <br>
+    Notes:
+    <br>
     <textarea class="form-control" id="notes-textarea" rows="15">{notes}</textarea>
     <br>
-    <button type="button" class="btn btn-primary" onclick="myFunction()">Save</button>
+    <button type="button" class="btn btn-primary" onclick="saveNotes()">Save</button>
 
     <script>
-    function myFunction() {{
-        var notes = $("#notes-textarea").val()
-        postJson("/save-notes/{uuid}", notes);
+    function saveNotes() {{
+        var title = $("#title-input").val();
+        var notes = $("#notes-textarea").val();
+        postJson("/save-notes/{uuid}", {{
+            "title": title,
+            "notes": notes
+        }});
     }}
     </script>
-    """.format(notes=notes, uuid=uuid)
+    """.format(title=title, notes=notes, uuid=uuid)
 
     return html

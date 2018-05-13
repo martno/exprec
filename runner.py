@@ -78,6 +78,10 @@ class Experiment:
             metadata['status'] = 'failed' if reraise_exception else 'succeeded'
             metadata['endedDatetime'] = datetime.datetime.now().isoformat()
 
+            if reraise_exception:
+                metadata['exceptionType'] = exc_type.__name__
+                metadata['exceptionValue'] = str(exc_value)
+
         if exc_type is not None:
             return not reraise_exception
 
@@ -182,7 +186,10 @@ def create_metadata_json(path, name, tags):
         'scalars': {},
         'fileDependencies': {},
         'notes': '',
-        'osVersion': '{} {}'.format(platform.system(), platform.release())
+        'osVersion': '{} {}'.format(platform.system(), platform.release()),
+        'exceptionType': None,
+        'exceptionValue': None,
+        'title': '',
     }   
 
     utils.dump_json(metadata, str(path/METADATA_JSON_FILENAME))
