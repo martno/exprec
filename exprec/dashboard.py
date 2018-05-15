@@ -13,7 +13,7 @@ from exprec import utils
 from exprec import html_utils
 
 
-def dashboard():
+def dashboard(host=None, port=None):
     app = Flask(__name__)
 
     @app.route('/')
@@ -116,4 +116,4 @@ def dashboard():
         
         return json.dumps(experiment_json['tags'])
 
-    app.run(debug=True)
+    app.run(host=host, port=port, debug=True)

@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 
+import click
+
 from exprec import dashboard
 
 
-def main():
-    dashboard.dashboard()
+@click.command()
+@click.option('--host', default='127.0.0.1', show_default=True, 
+help="The hostname to listen on. Set this to '0.0.0.0' to have the server available externally as well")
+@click.option('--port', default='9090', show_default=True, help="Port to listen to")
+def main(host, port):
+    dashboard.dashboard(host, port)
 
 
 if __name__ == "__main__":

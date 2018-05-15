@@ -13,6 +13,7 @@ COLUMNS = [
     'Select',
     'Show',
     'Status',
+    'PID',
     'Name',
     'Filename',
     'Duration',
@@ -75,10 +76,15 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
 
     file_space = utils.get_file_space_representation(str(path/c.FILES_FOLDER))
 
+    experiment_pid = int(metadata['pid'])
+    pids = utils.get_pids()
+    pid_icon_name = 'fas fa-play text-success' if experiment_pid in pids else 'fas fa-stop text-danger'
+
     procedure_item_by_column = {
         'Select': '<input class="experiment-row" type="checkbox" value="" id="checkbox-{}">'.format(uuid),
         'Show': "<button class='btn btn-primary btn-sm experiment-button' id='button-{}'>Show</button>".format(uuid),
         'Status': html_utils.get_status_icon_tag(status),
+        'PID': html_utils.fa_icon(pid_icon_name) + ' ' + str(experiment_pid),
         'Name': name if len(name) > 0 else None,
         'Filename': html_utils.monospace(metadata['filename']),
         'Duration': str(duration),

@@ -10,6 +10,7 @@ import logging
 import subprocess
 import traceback
 import platform
+import os
 
 from exprec import utils
 from exprec import constants as c
@@ -190,6 +191,7 @@ def create_metadata_json(path, name, tags):
         'exceptionType': None,
         'exceptionValue': None,
         'title': '',
+        'pid': os.getpid(),
     }   
 
     utils.dump_json(metadata, str(path/METADATA_JSON_FILENAME))

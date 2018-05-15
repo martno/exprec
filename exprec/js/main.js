@@ -153,7 +153,7 @@ function loadMain(whitelist, blacklist) {
             buttons: [
                 'columnsToggle'
             ],
-            "order": [[ 6, "desc" ]]  // 'Start' column
+            "order": [[ 7, "desc" ]]  // 'Start' column
         });
     });
 }

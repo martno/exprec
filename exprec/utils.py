@@ -140,7 +140,7 @@ def copy_source_code(source_path, target_path, extension='*.py'):
 
         target_file_path = target_path/python_file
 
-        target_file_path.parent.mkdir(exist_ok=True)
+        target_file_path.parent.mkdir(exist_ok=True, parents=True)
         shutil.copy(str(source_file_path), str(target_file_path))
 
 
@@ -154,3 +154,7 @@ def is_hidden_path(path):
 
 def get_class_name(object):
     return object.__class__.__name__
+
+
+def get_pids():
+    return [int(pid) for pid in os.listdir('/proc') if pid.isdigit()]

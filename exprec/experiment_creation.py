@@ -101,6 +101,7 @@ def create_summary(uuid, path, experiment_json):
         ('File space', utils.get_file_space_representation(str(path/c.FILES_FOLDER))),
         ('Parents', html_utils.monospace(' '.join(parents))),
         ('Exception', html_utils.monospace(exception) if exception is not None else None),
+        ('PID', html_utils.monospace(experiment_json['pid'])),
         ('Python version', experiment_json['pythonVersion']),
         ('OS', experiment_json['osVersion']),
     ]
