@@ -1,11 +1,13 @@
 import datetime
 from yattag import Doc
 from pathlib import Path
+import subprocess
 
 from exprec import utils
 from exprec import html_utils
 from exprec import constants as c
 
+N_SIGNIFICANT_DIGITS = 4
 
 METADATA_JSON_FILENAME = 'experiment.json'
 
@@ -95,19 +97,18 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
         'ID': html_utils.monospace(uuid),
     }
 
-    scalars = metadata['scalars']
-    for name in all_scalars:
-        if name in scalars:
-            value = str(scalars[name][-1]['value'])
-        else:
-            value = None
-        
-        procedure_item_by_column[name] = value
+    for scalar_name in all_scalars:
+        value = get_scalar_value(path, scalar_name)
+        if value is not None:
+            value = str(round_to_significant_digits(value, N_SIGNIFICANT_DIGITS))
+        procedure_item_by_column[scalar_name] = value
 
     params = metadata['parameters']
     for name in all_params:
         if name in params:
-            value = str(params[name])
+            value = params[name]
+            value = round_to_significant_digits(value, N_SIGNIFICANT_DIGITS)
+            value = str(value)
         else:
             value = None
         
@@ -125,3 +126,27 @@ def list_join(lst, item):
 
 def flatten(lst):
     return sum(lst, [])
+
+
+def get_scalar_value(path, scalar_name):
+    scalar_folder_path = path/c.SCALARS_FOLDER
+    scalar_path = scalar_folder_path / '{}.csv'.format(scalar_name)
+
+    if not scalar_path.exists():
+        return None
+
+    last_line = get_last_line_in_file(str(scalar_path))
+    _, value, _ = last_line.strip().split(',')
+    if value == 'value':
+        return None
+    
+    return float(value)
+
+
+def get_last_line_in_file(filepath):
+    return subprocess.check_output(['tail', '-1', filepath]).decode('utf-8')
+
+
+def round_to_significant_digits(value, n_digits):
+    format_string = '%.{}g'.format(n_digits)
+    return float(format_string % value)

@@ -99,16 +99,16 @@ class Experiment:
             metadata_json['parameters'][name] = value
 
     def add_scalar(self, name, value, step=None):
-        json_path = self.path / METADATA_JSON_FILENAME
-        with utils.UpdateJsonFile(str(json_path)) as metadata_json:
-            if name not in metadata_json['scalars']:
-                metadata_json['scalars'][name] = []
+        scalar_folder_path = self.path / c.SCALARS_FOLDER
+        scalar_folder_path.mkdir(exist_ok=True)
+        scalar_filepath = scalar_folder_path / '{}.csv'.format(name)
 
-            metadata_json['scalars'][name].append({
-                'value': value,
-                'step': step,
-                'time': datetime.datetime.now().isoformat(),
-            })
+        if not scalar_filepath.exists():
+            with scalar_filepath.open('w') as fp:
+                fp.write(','.join(c.SCALARS_HEADER_FIELDS) + '\n')
+        
+        with scalar_filepath.open('a') as fp:
+            fp.write('{},{},{}\n'.format(step if step is not None else '', value, datetime.datetime.now().isoformat()))
 
     def open(self, filename, mode='r', uuid=None):
         assert uuid != self.uuid, "'uuid' may not be the same as this experiment's uuid. Set `uuid=None` to open a file with this experiment."
@@ -183,7 +183,6 @@ def create_metadata_json(path, name, tags):
         'arguments': sys.argv[1:],
         'pythonVersion': sys.version,
         'parameters': {},
-        'scalars': {},
         'fileDependencies': {},
         'notes': '',
         'osVersion': '{} {}'.format(platform.system(), platform.release()),

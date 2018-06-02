@@ -90,10 +90,10 @@ def get_all_scalars(uuids):
     all_columns = []
 
     for uuid in uuids:
-        experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/uuid/c.METADATA_JSON_FILENAME
-        experiment_json = load_json(str(experiment_json_path))
-
-        all_columns += list(experiment_json['scalars'].keys())
+        scalar_folder = Path(c.DEFAULT_PARENT_FOLDER)/uuid/c.SCALARS_FOLDER
+        if scalar_folder.exists():
+            scalar_filepaths = scalar_folder.glob('*.csv')
+            all_columns += [scalar_filepath.stem for scalar_filepath in scalar_filepaths]
     
     all_columns = sorted(list(set(all_columns)))
 

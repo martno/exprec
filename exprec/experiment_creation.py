@@ -7,6 +7,8 @@ import cgi
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.embed import components
 from bokeh.models import HoverTool
+import csv
+import pandas as pd
 
 from exprec import html_utils
 from exprec import constants as c
@@ -52,7 +54,7 @@ def create_experiment_div(uuid):
         content_by_tab_name[icon_title('code', 'Code')] = create_code(uuid, path, experiment_json)
         content_by_tab_name[icon_title('cube', 'Packages')] = create_packages(path)
         content_by_tab_name[icon_title('chart-bar', 'Parameters')] = create_parameters(experiment_json)
-        content_by_tab_name[icon_title('chart-area', 'Charts')] = create_charts(experiment_json)
+        content_by_tab_name[icon_title('chart-area', 'Charts')] = create_charts(path)
         content_by_tab_name[icon_title('sticky-note', 'Notes')] = create_notes(uuid, experiment_json)
 
         content_by_tab_name = collections.OrderedDict([(key, html_utils.margin(value)) for key, value in content_by_tab_name.items()])
@@ -222,9 +224,13 @@ def create_parameters(experiment_json):
     return html_utils.create_table(['Parameter', 'Value'], param_list, id='parameter-table', attrs=[[], [('style', 'width: 100%;')]])
 
 
-def create_charts(experiment_json):
-    scalars = experiment_json['scalars']
-    scalar_names = list(scalars.keys())
+def create_charts(path):
+    scalars_folder = path / c.SCALARS_FOLDER
+
+    if scalars_folder.exists():
+        scalar_paths = scalars_folder.glob('*.csv')
+    else:
+        scalar_paths = []
 
     hover = HoverTool(
         tooltips=[
@@ -235,14 +241,13 @@ def create_charts(experiment_json):
     )
 
     plots = []
-    for scalar_name in sorted(scalar_names):
-        points = scalars[scalar_name]
+    for scalar_path in sorted(scalar_paths):
+        scalar_name = scalar_path.stem
 
-        xs = [point['step'] for point in points]
-        ys = [point['value'] for point in points]
+        df = pd.read_csv(scalar_path)
 
-        if xs[0] is None:
-            xs = [i for i in range(len(xs))]
+        xs = df['step']
+        ys = df['value']
         
         source = ColumnDataSource(data={
             'x': xs,
