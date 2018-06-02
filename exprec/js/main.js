@@ -7,6 +7,11 @@ $(document).ready(function() {
     addTags();
 
     $('.button-archive').click(function() {
+        if (getNumSelectedExperiments() == 0) {
+            alert('Please select at least one experiment');
+            return;
+        }
+
         $('.experiment-row').each(function() {
             if ($(this).is(':checked')) {
                 var checkboxId = $(this).attr('id');
@@ -19,7 +24,12 @@ $(document).ready(function() {
     });
 
     $('.button-delete').click(function() {
-        var doDelete = confirm("Do you want to delete all marked experiments?");
+        if (getNumSelectedExperiments() == 0) {
+            alert('Please select at least one experiment');
+            return;
+        }
+
+        var doDelete = confirm("Do you want to delete all selected experiments?");
 
         if (doDelete == true) {
             $('.experiment-row').each(function() {
@@ -35,7 +45,12 @@ $(document).ready(function() {
     });
 
     $('.button-delete-files').click(function() {
-        var doDeleteFiles = confirm("Do you want to delete all files associated with marked experiments?");
+        if (getNumSelectedExperiments() == 0) {
+            alert('Please select at least one experiment');
+            return;
+        }
+
+        var doDeleteFiles = confirm("Do you want to delete all files associated with selected experiments?");
 
         if (doDeleteFiles == true) {
             $('.experiment-row').each(function() {
@@ -48,6 +63,46 @@ $(document).ready(function() {
                 loadMain([], ['archive']);
             });
         }
+    });
+
+    $('.button-add-tags').click(function() {
+        if (getNumSelectedExperiments() == 0) {
+            alert('Please select at least one experiment');
+            return;
+        }
+
+        var tags = prompt("Enter tags to add (separate by space)");
+        tags = tags.split(" ");
+
+        $('.experiment-row').each(function() {
+            if ($(this).is(':checked')) {
+                var checkboxId = $(this).attr('id');
+                var id = checkboxId.replace('checkbox-', '');
+                var _ = postJson('/add_tags/' + id, tags);
+            }
+
+            loadMain([], ['archive']);
+        });
+    });
+
+    $('.button-remove-tags').click(function() {
+        if (getNumSelectedExperiments() == 0) {
+            alert('Please select at least one experiment');
+            return;
+        }
+
+        var tags = prompt("Enter tags to remove (separate by space)");
+        tags = tags.split(" ");
+
+        $('.experiment-row').each(function() {
+            if ($(this).is(':checked')) {
+                var checkboxId = $(this).attr('id');
+                var id = checkboxId.replace('checkbox-', '');
+                var _ = postJson('/remove_tags/' + id, tags);
+            }
+
+            loadMain([], ['archive']);
+        });
     });
 
     $('#show-inbox').click(function() {
@@ -100,6 +155,18 @@ $(document).ready(function() {
         }
     });
 });
+
+
+function getNumSelectedExperiments() {
+    var numSelected = 0;
+    $('.experiment-row').each(function() {
+        if ($(this).is(':checked')) {
+            numSelected += 1;
+        }
+    });
+
+    return numSelected;
+}
 
 
 function deleteRequest(url) {

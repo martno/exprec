@@ -113,7 +113,15 @@ def dashboard(host=None, port=None):
             for tag in request.json:
                 if tag not in experiment_json['tags']:
                     experiment_json['tags'].append(tag)
-        
-        return json.dumps(experiment_json['tags'])
+
+    @app.route('/remove_tags/<id>', methods=['POST'])
+    def remove_tags(id):
+        experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/id/c.METADATA_JSON_FILENAME
+
+        tags_to_remove = request.json
+
+        with utils.UpdateJsonFile(str(experiment_json_path)) as experiment_json:
+            tags = experiment_json['tags']
+            experiment_json['tags'] = list(set(tags) - set(tags_to_remove))
 
     app.run(host=host, port=port, debug=True)
