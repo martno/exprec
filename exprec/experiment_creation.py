@@ -2,14 +2,19 @@ from yattag import Doc
 import collections
 from pathlib import Path
 import datetime
-import plotly.offline as offline
-import plotly.graph_objs as go
 import json
 import cgi
+from bokeh.plotting import figure, ColumnDataSource
+from bokeh.embed import components
+from bokeh.models import HoverTool
 
 from exprec import html_utils
 from exprec import constants as c
 from exprec import utils
+
+
+FIGURE_WIDTH = 600
+FIGURE_HEIGHT = 400
 
 
 def create_experiment_div(uuid):
@@ -218,33 +223,45 @@ def create_parameters(experiment_json):
 
 
 def create_charts(experiment_json):
-    html = ''
+    scalars = experiment_json['scalars']
+    scalar_names = list(scalars.keys())
 
-    for name, points in experiment_json['scalars'].items():
-        steps = [point['step'] for point in points]
-        values = [point['value'] for point in points]
+    hover = HoverTool(
+        tooltips=[
+            ('step', '@x'),
+            ('value', '@y'),
+        ],
+        mode='vline'
+    )
 
-        if steps[0] is None:
-            steps = [i for i in range(len(steps))]
+    plots = []
+    for scalar_name in sorted(scalar_names):
+        points = scalars[scalar_name]
 
-        figure_data = {
-            'data': [{
-                'x': steps,
-                'y': values,
-            }], 
-            'layout': {
-                'title': name,
-                'autosize': True,
-                'width': '100%',
-                'height': '100%',
-            }
-        }
+        xs = [point['step'] for point in points]
+        ys = [point['value'] for point in points]
 
-        div = offline.plot(figure_data, output_type='div')
+        if xs[0] is None:
+            xs = [i for i in range(len(xs))]
+        
+        source = ColumnDataSource(data={
+            'x': xs,
+            'y': ys,
+        })
 
-        html += div
+        plot = figure(
+            tools=[hover], 
+            title=scalar_name,
+            x_axis_label='Step',
+            width=FIGURE_WIDTH,
+            height=FIGURE_HEIGHT,
+        )
+        plot.line('x', 'y', source=source)
 
-    return html
+        script, div = components(plot)
+        plots.append('{}\n{}'.format(script, div))
+
+    return '\n\n'.join(plots)
 
 
 def get_parents(experiment_json):

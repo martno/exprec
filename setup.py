@@ -6,7 +6,7 @@ with open('README.md') as readme_file:
 requirements = [
     'Flask>=0.12.2',
     'attrs>=17.4.0',
-    'plotly>=2.5.1',
+    'bokeh>=0.12.15',
     'yattag>=1.10.0',
     'humanize>=0.5.1',
 ]
@@ -14,7 +14,7 @@ requirements = [
 setuptools.setup(
     name="exprec",
     version="0.1.0",
-    url="https://github.com/martno/exprec",
+    url="https://github.com/martno/exprec/",
 
     author="Martin Nordstrom",
     author_email="martin.nordstrom87@gmail.com",
