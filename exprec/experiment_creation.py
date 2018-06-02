@@ -9,6 +9,9 @@ from bokeh.embed import components
 from bokeh.models import HoverTool
 import csv
 import pandas as pd
+from PIL import Image
+import base64
+from io import BytesIO
 
 from exprec import html_utils
 from exprec import constants as c
@@ -56,6 +59,7 @@ def create_experiment_div(uuid):
         content_by_tab_name[icon_title('chart-bar', 'Parameters')] = create_parameters(experiment_json)
         content_by_tab_name[icon_title('chart-area', 'Charts')] = create_charts(path)
         content_by_tab_name[icon_title('sticky-note', 'Notes')] = create_notes(uuid, experiment_json)
+        content_by_tab_name[icon_title('image', 'Images')] = create_images(path)
 
         content_by_tab_name = collections.OrderedDict([(key, html_utils.margin(value)) for key, value in content_by_tab_name.items()])
 
@@ -299,3 +303,56 @@ def create_notes(uuid, experiment_json):
     """.format(title=title, notes=notes, uuid=uuid)
 
     return html
+
+
+def create_images(path):
+    image_by_name = get_image_by_name_map(path)
+    
+    names = list(image_by_name.keys())
+
+    html = ''
+
+    for name in sorted(names):
+        image = image_by_name[name]
+        
+        image_string = convert_image_to_base64(image)
+
+        html += '<h4>{}</h4>\n'.format(name)
+        html += '<img src="data:image/png;base64,{}">\n\n'.format(image_string)
+    
+    return html
+
+
+def get_image_by_name_map(path):
+    image_parent_path = path/c.IMAGE_FOLDER
+
+    image_by_name = {}
+
+    if image_parent_path.exists():
+        image_folder_paths = [image_folder_path for image_folder_path in image_parent_path.iterdir() 
+                              if image_folder_path.is_dir()]
+
+        for image_folder_path in image_folder_paths:
+            image_ids = [int(image_path.stem) for image_path in image_folder_path.glob('*.png')]
+            if not image_ids:
+                continue
+
+            max_image_id = max(image_ids)
+
+            image_path = image_folder_path / '{}.png'.format(max_image_id)
+            image = Image.open(image_path)
+
+            name = '{} [step: {}]'.format(image_folder_path.name, max_image_id)
+
+            image_by_name[name] = image
+
+    return image_by_name
+
+
+def convert_image_to_base64(image):
+    buffered = BytesIO()
+    image.save(buffered, format="png")
+    image_bytes = base64.b64encode(buffered.getvalue())
+    image_string = image_bytes.decode('utf-8')
+
+    return image_string

@@ -10,6 +10,8 @@ import subprocess
 import traceback
 import platform
 import os
+import numpy as np
+from PIL import Image
 
 from exprec import utils
 from exprec import constants as c
@@ -109,6 +111,16 @@ class Experiment:
         
         with scalar_filepath.open('a') as fp:
             fp.write('{},{},{}\n'.format(step if step is not None else '', value, datetime.datetime.now().isoformat()))
+
+    def add_image(self, name, image, step):
+        if type(image) == np.ndarray:
+            image = Image.fromarray(image)
+        
+        image_folder = self.path/c.IMAGE_FOLDER/name
+        image_folder.mkdir(exist_ok=True, parents=True)
+
+        image_path = image_folder / '{}.png'.format(step)
+        image.save(image_path)
 
     def open(self, filename, mode='r', uuid=None):
         assert uuid != self.uuid, "'uuid' may not be the same as this experiment's uuid. Set `uuid=None` to open a file with this experiment."
