@@ -2,7 +2,6 @@ import attr
 import uuid
 from pathlib import Path
 import sys
-import pip
 import datetime
 import json
 import shutil
