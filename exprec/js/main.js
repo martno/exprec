@@ -147,7 +147,7 @@ $(document).ready(function() {
                 });
 
                 var diff2htmlUi = new Diff2HtmlUI({diff: diffString});
-                diff2htmlUi.draw('#diff-div', {inputFormat: 'diff', showFiles: true, matching: 'lines'});
+                diff2htmlUi.draw('#diff-div', {inputFormat: 'diff', showFiles: true, matching: 'lines', outputFormat: 'side-by-side'});
                 diff2htmlUi.highlightCode('#diff-div');
             });
         } else {
