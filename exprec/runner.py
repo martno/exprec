@@ -12,6 +12,7 @@ import platform
 import os
 import numpy as np
 from PIL import Image
+import git
 
 from exprec import utils
 from exprec import constants as c
@@ -22,6 +23,8 @@ DEFAULT_PARENT_FOLDER = '.experiments'
 METADATA_JSON_FILENAME = 'experiment.json'
 PACKAGES_FILENAME = 'pip_freeze.txt'
 FILES_FOLDER = 'files'
+
+SHORT_GIT_SHA_LENGTH = 7
 
 
 @attr.s
@@ -202,6 +205,7 @@ def create_metadata_json(path, name, tags):
         'exceptionValue': None,
         'title': '',
         'pid': os.getpid(),
+        'git': get_git_metadata(),
     }   
 
     utils.dump_json(metadata, str(path/METADATA_JSON_FILENAME))
@@ -218,4 +222,17 @@ def create_pip_freeze_file(path):
 def uuid1_to_datetime(uuid1):
     import datetime
     return datetime.datetime.fromtimestamp((uuid1.time - 0x01b21dd213814000)*100/1e9)    
+
+
+def get_git_metadata():
+    try:
+        repo = git.Repo(search_parent_directories=True)
+        sha = repo.head.object.hexsha
+        short = repo.git.rev_parse(sha, short=SHORT_GIT_SHA_LENGTH)
+        return {
+            'sha': sha,
+            'short': short,
+        }
+    except git.exc.InvalidGitRepositoryError:
+        return None
 

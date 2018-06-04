@@ -24,6 +24,7 @@ COLUMNS = [
     'Tags',
     'File space',
     'ID',
+    'Git hash'
 ]
 
 
@@ -95,6 +96,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
         'Tags': ' '.join([html_utils.badge(tag) for tag in tags]),
         'File space': file_space,
         'ID': html_utils.monospace(uuid),
+        'Git hash': html_utils.monospace(metadata['git']['short']) if metadata['git'] is not None else None,
     }
 
     for scalar_name in all_scalars:
