@@ -40,20 +40,21 @@ def create_table(columns, item_by_column_list, id, attrs=None):
 
     doc, tag, text = Doc().tagtext()
 
-    with tag('table', klass='table', id=id):
-        with tag('thead'):
-            with tag('tr'):
-                for column in columns:
-                    with tag('th', scope='col'):
-                        doc.asis(column)
-
-        with tag('tbody'):
-            for item_by_column in item_by_column_list:
+    with tag('small'):
+        with tag('table', klass='table', id=id):
+            with tag('thead'):
                 with tag('tr'):
-                    for column, attr in zip(columns, attrs):
-                        with tag('td', *attr):
-                            item = get(item_by_column[column], '<div style="color: #B2B2B2;">N/A</div>')
-                            doc.asis(item)
+                    for column in columns:
+                        with tag('th', scope='col'):
+                            doc.asis(column)
+
+            with tag('tbody'):
+                for item_by_column in item_by_column_list:
+                    with tag('tr'):
+                        for column, attr in zip(columns, attrs):
+                            with tag('td', *attr):
+                                item = get(item_by_column[column], '<div style="color: #B2B2B2;">N/A</div>')
+                                doc.asis(item)
 
     return doc.getvalue()            
 

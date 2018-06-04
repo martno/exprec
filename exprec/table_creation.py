@@ -84,7 +84,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
 
     procedure_item_by_column = {
         'Select': '<input class="experiment-row" type="checkbox" value="" id="checkbox-{}">'.format(uuid),
-        'Show': "<button class='btn btn-primary btn-sm experiment-button' id='button-{}'>Show</button>".format(uuid),
+        'Show': "<button class='btn btn-primary btn-xs experiment-button' id='button-{}'>Show</button>".format(uuid),
         'Status': html_utils.get_status_icon_tag(status),
         'PID': html_utils.fa_icon(pid_icon_name) + ' ' + str(experiment_pid),
         'Name': name if len(name) > 0 else None,
