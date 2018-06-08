@@ -1,5 +1,6 @@
 from yattag import Doc
 from pathlib import Path
+import colorhash
 
 from exprec import constants as c
 from exprec import utils
@@ -105,3 +106,13 @@ def code(code_string, language=None):
 
 def margin(html, amount='10px'):
     return '<div style="margin: {}">{}</div>'.format(amount, html)
+
+
+def color_circle(string):
+    hex_color = colorhash.ColorHash(string).hex
+    circle = "<i class='fas fa-circle' style='color:{}'></i>".format(hex_color)
+    return circle
+
+
+def color_circle_and_string(string):
+    return '{} {}'.format(color_circle(string), string)

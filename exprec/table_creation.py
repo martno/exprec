@@ -24,7 +24,7 @@ COLUMNS = [
     'Tags',
     'File space',
     'ID',
-    'Git hash'
+    'Git commit',
 ]
 
 
@@ -89,14 +89,14 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
         'Status': html_utils.get_status_icon_tag(status),
         'PID': html_utils.fa_icon(pid_icon_name) + ' ' + str(experiment_pid),
         'Name': name if len(name) > 0 else None,
-        'Filename': html_utils.monospace(metadata['filename']),
+        'Filename': html_utils.monospace(html_utils.color_circle_and_string(metadata['filename'])),
         'Duration': str(duration),
         'Start': start.strftime('%Y-%m-%d %H:%M:%S'),
         'End': end.strftime('%Y-%m-%d %H:%M:%S') if end is not None else None,
         'Tags': ' '.join([html_utils.badge(tag) for tag in tags]),
         'File space': file_space,
         'ID': html_utils.monospace(uuid),
-        'Git hash': html_utils.monospace(metadata['git']['short']) if metadata['git'] is not None else None,
+        'Git commit': html_utils.monospace(html_utils.color_circle_and_string(metadata['git']['short'])) if metadata['git'] is not None else None,
     }
 
     for scalar_name in all_scalars:
@@ -152,3 +152,4 @@ def get_last_line_in_file(filepath):
 def round_to_significant_digits(value, n_digits):
     format_string = '%.{}g'.format(n_digits)
     return float(format_string % value)
+

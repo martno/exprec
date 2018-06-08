@@ -9,7 +9,8 @@ requirements = [
     'bokeh>=0.12.15',
     'yattag>=1.10.0',
     'humanize>=0.5.1',
-    'GitPython>=2.1.10'
+    'GitPython>=2.1.10',
+    'colorhash>=1.0.2',
 ]
 
 setuptools.setup(
