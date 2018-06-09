@@ -5,8 +5,12 @@ import os
 import humanize
 from pathlib import Path
 import shutil
+import uuid
 
 from exprec import constants as c
+
+
+MINIMUM_SHORT_UUID_LENGTH = 7
 
 
 @attr.s
@@ -163,3 +167,38 @@ def get_pids():
 def load_experiment_json(uuid):
     path = Path(c.DEFAULT_PARENT_FOLDER)/uuid/c.METADATA_JSON_FILENAME
     return load_json(str(path))
+
+
+def get_short_uuid(uuid):
+    length = get_short_uuid_length()
+    return uuid[:length]
+
+
+def get_short_uuid_length():
+    uuids = get_uuids(Path(c.DEFAULT_PARENT_FOLDER))
+
+    if not uuids:
+        return MINIMUM_SHORT_UUID_LENGTH
+
+    for length in range(MINIMUM_SHORT_UUID_LENGTH, len(uuids[0])):
+        short_uuids = set(uuid[:length] for uuid in uuids)
+        if len(short_uuids) == len(uuids):
+            return length
+    
+    assert False, "get_uuids() returned two identical uuids."
+
+
+def get_full_uuid(short_uuid):
+    uuids = get_uuids(Path(c.DEFAULT_PARENT_FOLDER))
+    uuids = [uuid for uuid in uuids if uuid.startswith(short_uuid)]
+    if not uuids:
+        raise ValueError("No UUID exists corresponding to the short UUID '{}'".format(short_uuid))
+
+    uuid = min(uuids, key=lambda uuid: uuid1_to_datetime(uuid))
+
+    return uuid
+
+
+def uuid1_to_datetime(uuid1_string):
+    uuid1 = uuid.UUID(uuid1_string)
+    return datetime.datetime(1582, 10, 15) + datetime.timedelta(microseconds=uuid1.time//10)

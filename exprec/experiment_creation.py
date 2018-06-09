@@ -26,20 +26,22 @@ def create_experiment_div(uuid):
         with tag('button', klass="btn btn-primary button-restore-source-code", style="width: 61px;"):
             doc.asis(html_utils.fa_icon('file-code'))
         doc.stag('hr')
+
         with tag('h5'):
-            doc.asis(html_utils.get_status_icon_tag(experiment_json['status']))
-            text(' ')
-            text(uuid)
+            title = experiment_json['title']
+            if title:
+                line1 = '{} {} - {}'.format(html_utils.color_circle(uuid), utils.get_short_uuid(uuid), title)
+            else:
+                line1 = '{} {}'.format(html_utils.color_circle(uuid), utils.get_short_uuid(uuid))
+            doc.asis(line1)
 
-            doc.asis('<span style="display:inline-block; width: 16px;"></span>')
-            text('[{}]'.format(experiment_json['filename']))
-            doc.asis('<span style="display:inline-block; width: 16px;"></span>')
+        doc.asis(html_utils.get_status_icon_tag(experiment_json['status']))
+        text(' ')
+        doc.asis(experiment_json['filename'])
+        doc.asis('<span style="display:inline-block; width: 16px;"></span>')
+        tags = sorted(experiment_json['tags'])
+        doc.asis(' '.join([html_utils.badge(tag) for tag in tags]))
 
-            tags = sorted(experiment_json['tags'])
-            doc.asis(' '.join([html_utils.badge(tag) for tag in tags]))
-
-        text(experiment_json['title'])
-        
         doc.stag('hr')
 
         content_by_tab_name = collections.OrderedDict()

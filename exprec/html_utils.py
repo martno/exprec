@@ -139,9 +139,9 @@ def create_charts(uuids):
         title = experiment_json['title']
         
         if title:
-            html += '{} - {}\n<br>'.format(color_circle_and_string(uuid), title)
+            html += '{} {} - {}\n<br>'.format(color_circle(uuid), utils.get_short_uuid(uuid), title)
         else:
-            html += '{}\n<br>'.format(color_circle_and_string(uuid))
+            html += '{} {}\n<br>'.format(color_circle(uuid), utils.get_short_uuid(uuid))
 
     scalar_names = get_all_scalar_names(paths)
 
@@ -180,7 +180,8 @@ def create_charts(uuids):
                 plot.line('x', 'y', 
                     source=source, 
                     line_color=bokeh.colors.RGB(*color),
-                    legend=uuid
+                    legend=utils.get_short_uuid(uuid),
+                    line_width=2,
                 )
 
         plot.legend.location = "top_left"
@@ -209,6 +210,7 @@ def create_parameters(uuids):
     experiment_json_by_uuid = {uuid: utils.load_experiment_json(uuid) for uuid in uuids}
 
     params_by_uuid = {uuid: experiment_json['parameters'] for uuid, experiment_json in experiment_json_by_uuid.items()}
+    params_by_uuid = {utils.get_short_uuid(uuid): params for uuid, params in params_by_uuid.items()}
 
     all_params = set()
     for params in params_by_uuid.values():
@@ -225,4 +227,4 @@ def create_parameters(uuids):
     # The last column has width 100%:
     attrs = [[]]*len(uuids) + [[('style', 'width: 100%;')]]
 
-    return create_table(['Parameter', *uuids], rows, id='parameter-table', attrs=attrs)
+    return create_table(['Parameter', *params_by_uuid.keys()], rows, id='parameter-table', attrs=attrs)
