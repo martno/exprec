@@ -22,6 +22,7 @@ def compare_experiments(uuids):
     else:
         diff_string = None
 
+    content_by_tab_name[html_utils.icon_title('chart-bar', 'Parameters')] = html_utils.create_parameters(uuids)
     content_by_tab_name[html_utils.icon_title('chart-area', 'Charts')] = html_utils.create_charts(uuids)
 
     html += html_utils.create_tabs(content_by_tab_name, tabs_id='compare-tabs')

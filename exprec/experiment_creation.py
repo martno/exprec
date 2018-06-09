@@ -47,7 +47,7 @@ def create_experiment_div(uuid):
         content_by_tab_name[html_utils.icon_title('terminal', 'Output')] = create_output(path)
         content_by_tab_name[html_utils.icon_title('code', 'Code')] = create_code(uuid, path, experiment_json)
         content_by_tab_name[html_utils.icon_title('cube', 'Packages')] = create_packages(path)
-        content_by_tab_name[html_utils.icon_title('chart-bar', 'Parameters')] = create_parameters(experiment_json)
+        content_by_tab_name[html_utils.icon_title('chart-bar', 'Parameters')] = html_utils.create_parameters([uuid])
         content_by_tab_name[html_utils.icon_title('chart-area', 'Charts')] = html_utils.create_charts([uuid])
         content_by_tab_name[html_utils.icon_title('image', 'Images')] = create_images(path)
 
@@ -214,13 +214,6 @@ def create_output(path):
         output = fp.read()
     
     return html_utils.monospace(output)
-
-
-def create_parameters(experiment_json):
-    params = experiment_json['parameters']
-
-    param_list = [{'Parameter': name, 'Value': str(params[name])} for name in sorted(list(params.keys()))]
-    return html_utils.create_table(['Parameter', 'Value'], param_list, id='parameter-table', attrs=[[], [('style', 'width: 100%;')]])
 
 
 def create_charts(path):

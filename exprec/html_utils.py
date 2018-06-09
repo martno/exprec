@@ -139,9 +139,9 @@ def create_charts(uuids):
         title = experiment_json['title']
         
         if title:
-            html += '{} - {}\n'.format(color_circle_and_string(uuid), title)
+            html += '{} - {}\n<br>'.format(color_circle_and_string(uuid), title)
         else:
-            html += '{}\n'.format(color_circle_and_string(uuid))
+            html += '{}\n<br>'.format(color_circle_and_string(uuid))
 
     scalar_names = get_all_scalar_names(paths)
 
@@ -203,3 +203,26 @@ def get_all_scalar_names(paths):
     scalar_names = sorted(list(scalar_names))
 
     return scalar_names
+
+
+def create_parameters(uuids):
+    experiment_json_by_uuid = {uuid: utils.load_experiment_json(uuid) for uuid in uuids}
+
+    params_by_uuid = {uuid: experiment_json['parameters'] for uuid, experiment_json in experiment_json_by_uuid.items()}
+
+    all_params = set()
+    for params in params_by_uuid.values():
+        all_params.update(params)
+    all_params = sorted(list(all_params))
+
+    rows = []
+    for param in all_params:
+        row = {'Parameter': param}
+        for uuid, params in params_by_uuid.items():
+            row[uuid] = str(params[param]) if param in params else None
+        rows.append(row)
+    
+    # The last column has width 100%:
+    attrs = [[]]*len(uuids) + [[('style', 'width: 100%;')]]
+
+    return create_table(['Parameter', *uuids], rows, id='parameter-table', attrs=attrs)

@@ -111,7 +111,8 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
     for name in all_params:
         if name in params:
             value = params[name]
-            value = round_to_significant_digits(value, N_SIGNIFICANT_DIGITS)
+            if type(value) in (int, float):
+                value = round_to_significant_digits(value, N_SIGNIFICANT_DIGITS)
             value = str(value)
         else:
             value = None
