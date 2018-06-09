@@ -58,7 +58,6 @@ def create_experiment_div(uuid):
         content_by_tab_name[icon_title('cube', 'Packages')] = create_packages(path)
         content_by_tab_name[icon_title('chart-bar', 'Parameters')] = create_parameters(experiment_json)
         content_by_tab_name[icon_title('chart-area', 'Charts')] = create_charts(path)
-        content_by_tab_name[icon_title('sticky-note', 'Notes')] = create_notes(uuid, experiment_json)
         content_by_tab_name[icon_title('image', 'Images')] = create_images(path)
 
         content_by_tab_name = collections.OrderedDict([(key, html_utils.margin(value)) for key, value in content_by_tab_name.items()])
@@ -102,7 +101,9 @@ def create_summary(uuid, path, experiment_json):
         ('Status', html_utils.get_status_icon_tag(status) + ' ' + status),
         ('Name', experiment_json['name']),
         ('ID', html_utils.monospace(uuid)),
-        ('Title', experiment_json['title']),
+        ('Title<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#titleModal">Edit</button>', '<div id="title-div">{}</div>'.format(experiment_json['title'])),
+        ('Description<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#descriptionModal">Edit</button>', '<div id="description-div"></div>'),
+        ('Conclusion<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#conclusionModal">Edit</button>', '<div id="conclusion-div"></div>'),
         ('Filename', html_utils.color_circle_and_string(experiment_json['filename'])),
         ('Duration', str(duration)),
         ('Start', start.strftime('%Y-%m-%d %H:%M:%S')),
@@ -120,7 +121,11 @@ def create_summary(uuid, path, experiment_json):
 
     item_by_column_list = [{'Name': name, 'Value': value} for name, value in items]
 
-    return html_utils.create_table(columns, item_by_column_list, id='summary-table', attrs=[[], [('style', 'width: 100%;')]])
+    html = html_utils.create_table(columns, item_by_column_list, id='summary-table', attrs=[[], [('style', 'width: 100%;')]])
+
+    html += create_modal_html(uuid, experiment_json)
+
+    return html
 
 
 def create_packages(path):
@@ -278,34 +283,6 @@ def get_parents(experiment_json):
     return list(experiment_json['fileDependencies'].keys())
 
 
-def create_notes(uuid, experiment_json):
-    title = experiment_json['title']
-    notes = experiment_json['notes']
-
-    html = """
-    Title: <input type="text" id="title-input" class="form-control" value="{title}">
-    <br>
-    Notes:
-    <br>
-    <textarea class="form-control" id="notes-textarea" rows="15">{notes}</textarea>
-    <br>
-    <button type="button" class="btn btn-primary" onclick="saveNotes()">Save</button>
-
-    <script>
-    function saveNotes() {{
-        var title = $("#title-input").val();
-        var notes = $("#notes-textarea").val();
-        postJson("/save-notes/{uuid}", {{
-            "title": title,
-            "notes": notes
-        }});
-    }}
-    </script>
-    """.format(title=title, notes=notes, uuid=uuid)
-
-    return html
-
-
 def create_images(path):
     image_by_name = get_image_by_name_map(path)
     
@@ -357,3 +334,77 @@ def convert_image_to_base64(image):
     image_string = image_bytes.decode('utf-8')
 
     return image_string
+
+
+def create_modal_html(uuid, experiment_json):
+    html = """
+      <!-- Title Modal -->
+      <div class="modal" id="titleModal" tabindex="-1" role="dialog" aria-labelledby="titleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="titleModalLabel">Title</h5>
+            </div>
+            <div class="modal-body">
+              <input type="text" class="form-control" id="titleTextInput" value='{title}'></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="saveTitle('{uuid}')">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description Modal -->
+      <div class="modal" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-" id="ModalLabel">Description</h5>
+            </div>
+            <div class="modal-body">
+              <textarea class="form-control" id="descriptionTextArea" rows="18" style="font-family: monospace;"></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="saveDescription('{uuid}')">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conclusion Modal -->
+      <div class="modal" id="conclusionModal" tabindex="-1" role="dialog" aria-labelledby="conclusionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-conclusion" id="conclusionModalLabel">Conclusion</h5>
+            </div>
+            <div class="modal-body">
+              <textarea class="form-control" id="conclusionTextArea" rows="18" style="font-family: monospace;"></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="saveConclusion('{uuid}')">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        var converter = new showdown.Converter();
+        $('#descriptionTextArea').text('{description}');
+        $('#conclusionTextArea').text('{conclusion}');
+        $('#description-div').html(converter.makeHtml('{description}'));
+        $('#conclusion-div').html(converter.makeHtml('{conclusion}'));
+      </script>
+    """.format(
+        uuid=uuid, 
+        title=experiment_json['title'], 
+        description=experiment_json['description'].replace('\n', '\\n'), 
+        conclusion=experiment_json['conclusion'].replace('\n', '\\n')
+    )
+
+    return html
+

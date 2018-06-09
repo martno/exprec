@@ -199,11 +199,12 @@ def create_metadata_json(path, name, tags):
         'pythonVersion': sys.version,
         'parameters': {},
         'fileDependencies': {},
-        'notes': '',
         'osVersion': '{} {}'.format(platform.system(), platform.release()),
         'exceptionType': None,
         'exceptionValue': None,
         'title': '',
+        'description': '',
+        'conclusion': '',
         'pid': os.getpid(),
         'git': get_git_metadata(),
     }   

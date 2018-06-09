@@ -154,6 +154,8 @@ $(document).ready(function() {
             alert("Select one or two experiments to compare.");
         }
     });
+
+    showdown.setOption('simplifiedAutoLink', true);
 });
 
 
@@ -220,7 +222,7 @@ function loadMain(whitelist, blacklist) {
             buttons: [
                 'columnsToggle'
             ],
-            "order": [[ 7, "desc" ]]  // 'Start' column
+            "order": [[ 8, "desc" ]]  // 'Start' column
         });
     });
 }
@@ -282,5 +284,30 @@ function getMethods(obj) {
       }
     }
     return result;
+}
+
+
+function saveTitle(uuid) {
+    var text = $('#titleTextInput').val();
+    postJson("/save-text/" + uuid + '/title', text);
+    $('#title-div').text(text);
+}
+
+
+function saveDescription(uuid) {
+    var text = $('#descriptionTextArea').val();
+    postJson("/save-text/" + uuid + '/description', text);
+
+    var converter = new showdown.Converter();
+    $('#description-div').html(converter.makeHtml(text));
+}
+
+
+function saveConclusion(uuid) {
+    var text = $('#conclusionTextArea').val();
+    postJson("/save-text/" + uuid + '/conclusion', text);
+
+    var converter = new showdown.Converter();
+    $('#conclusion-div').html(converter.makeHtml(text));
 }
 

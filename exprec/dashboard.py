@@ -69,15 +69,15 @@ def dashboard(host=None, port=None):
         
         return id
 
-    @app.route('/save-notes/<id>', methods=['POST'])
-    def save_notes(id):
+    @app.route('/save-text/<id>/<text_id>', methods=['POST'])
+    def save_text(id, text_id):
+        if text_id not in ('title', 'description', 'conclusion'):
+            raise ValueError('Invalid text_id: ' + text_id)
+
         experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/id/c.METADATA_JSON_FILENAME
 
         with utils.UpdateJsonFile(str(experiment_json_path)) as experiment_json:
-            experiment_json['title'] = request.json['title']
-            experiment_json['notes'] = request.json['notes']
-
-        return id
+            experiment_json[text_id] = request.json
 
     @app.route('/compare-experiments', methods=['POST'])
     def compare_experiments():
