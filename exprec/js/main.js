@@ -116,6 +116,11 @@ $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
 
     $('.button-compare').click(function() {
+        if (getNumSelectedExperiments() == 0) {
+            alert('Please select at least one experiment');
+            return;
+        }
+
         var checked = [];
 
         $('.experiment-row').each(function() {
@@ -126,33 +131,25 @@ $(document).ready(function() {
             }
         });
 
-        if (checked.length == 1 || checked.length == 2) {
-            var promise;
-            if (checked.length == 1) {
-                var uuid = checked[0];
-                promise = $.get('/compare-with-local/' + uuid);
-            } else {
-                promise = postJson('/compare-experiments', checked);
-            }
+        var promise = postJson('/compare-experiments', checked);
 
-            promise.done(function(result) {
-                var html = result["html"];
-                var diffString = result["diffString"];
+        promise.done(function(result) {
+            var html = result["html"];
+            var diffString = result["diffString"];
 
-                $('#experiments-div').html(html);
-                $('#main').hide();
-                $('.button-go-back').click(function() {
-                    $('#main').show();
-                    $('#experiments-div').html('');
-                });
-
+            $('#experiments-div').html(html);
+            $('#main').hide();
+            $('.button-go-back').click(function() {
+                $('#main').show();
+                $('#experiments-div').html('');
+            });
+            
+            if (diffString !== null) {
                 var diff2htmlUi = new Diff2HtmlUI({diff: diffString});
                 diff2htmlUi.draw('#diff-div', {inputFormat: 'diff', showFiles: true, matching: 'lines', outputFormat: 'side-by-side'});
                 diff2htmlUi.highlightCode('#diff-div');
-            });
-        } else {
-            alert("Select one or two experiments to compare.");
-        }
+            }
+        });
     });
 
     showdown.setOption('simplifiedAutoLink', true);

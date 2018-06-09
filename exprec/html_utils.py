@@ -1,6 +1,11 @@
 from yattag import Doc
 from pathlib import Path
 import colorhash
+import pandas as pd
+from bokeh.plotting import figure, ColumnDataSource
+from bokeh.embed import components
+from bokeh.models import HoverTool
+import bokeh.colors
 
 from exprec import constants as c
 from exprec import utils
@@ -11,6 +16,9 @@ ICON_BY_STATUS = {
     'succeeded': 'fas fa-check text-success',
     'failed': 'fas fa-times text-danger',
 }
+
+FIGURE_WIDTH = 600
+FIGURE_HEIGHT = 400
 
 
 def monospace(string):
@@ -32,6 +40,10 @@ def fa_icon(icon_name):
 
 def get_status_icon_tag(status):
     return icon(ICON_BY_STATUS[status])
+
+
+def icon_title(icon_name, title):
+    return fa_icon(icon_name) + ' ' + title
 
 
 def create_table(columns, item_by_column_list, id, attrs=None):
@@ -116,3 +128,78 @@ def color_circle(string):
 
 def color_circle_and_string(string):
     return '{} {}'.format(color_circle(string), string)
+
+
+def create_charts(uuids):
+    paths = [Path(c.DEFAULT_PARENT_FOLDER)/uuid for uuid in uuids]
+
+    html = ''
+    for uuid in uuids:
+        experiment_json = utils.load_experiment_json(uuid)
+        title = experiment_json['title']
+        
+        if title:
+            html += '{} - {}\n'.format(color_circle_and_string(uuid), title)
+        else:
+            html += '{}\n'.format(color_circle_and_string(uuid))
+
+    scalar_names = get_all_scalar_names(paths)
+
+    hover = HoverTool(
+        tooltips=[
+            ('step', '@x'),
+            ('value', '@y'),
+        ],
+        mode='vline'
+    )
+
+    plots = []
+
+    for scalar_name in scalar_names:
+        plot = figure(
+            tools=[hover], 
+            title=scalar_name,
+            x_axis_label='Step',
+            width=FIGURE_WIDTH,
+            height=FIGURE_HEIGHT,
+        )
+
+        for uuid, path in zip(uuids, paths):
+            scalar_file = path / c.SCALARS_FOLDER / '{}.csv'.format(scalar_name)
+
+            if scalar_file.is_file():
+                df = pd.read_csv(scalar_file)
+                
+                source = ColumnDataSource(data={
+                    'x': df['step'],
+                    'y': df['value'],
+                })
+
+                color = colorhash.ColorHash(uuid).rgb
+
+                plot.line('x', 'y', 
+                    source=source, 
+                    line_color=bokeh.colors.RGB(*color),
+                    legend=uuid
+                )
+
+        plot.legend.location = "top_left"
+        plot.legend.click_policy = "hide"
+
+        script, div = components(plot)
+        plots.append('{}\n{}'.format(script, div))
+
+    return html + '\n\n'.join(plots)
+
+
+def get_all_scalar_names(paths):
+    scalar_names = set()
+    for path in paths:
+        scalars_folder = path / c.SCALARS_FOLDER
+
+        scalar_paths = scalars_folder.glob('*.csv')
+        scalar_names.update(scalar_path.stem for scalar_path in scalar_paths)
+    
+    scalar_names = sorted(list(scalar_names))
+
+    return scalar_names

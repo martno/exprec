@@ -97,7 +97,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
         'End': end.strftime('%Y-%m-%d %H:%M:%S') if end is not None else None,
         'Tags': ' '.join([html_utils.badge(tag) for tag in tags]),
         'File space': file_space,
-        'ID': html_utils.monospace(uuid),
+        'ID': html_utils.monospace(html_utils.color_circle_and_string(uuid)),
         'Git commit': html_utils.monospace(html_utils.color_circle_and_string(metadata['git']['short'])) if metadata['git'] is not None else None,
     }
 

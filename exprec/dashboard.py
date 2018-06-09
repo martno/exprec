@@ -82,13 +82,7 @@ def dashboard(host=None, port=None):
     @app.route('/compare-experiments', methods=['POST'])
     def compare_experiments():
         experiment_ids = request.json
-        assert len(experiment_ids) == 2, len(experiment_ids)
-        
-        return jsonify(compare_creation.compare_experiments(*experiment_ids))
-
-    @app.route('/compare-with-local/<id>')
-    def compare_with_local(id):
-        return jsonify(compare_creation.compare_with_local(id))
+        return jsonify(compare_creation.compare_experiments(experiment_ids))
 
     @app.route('/restore-source-code/<id>')
     def restore_source_code(id):

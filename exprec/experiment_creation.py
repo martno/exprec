@@ -4,11 +4,6 @@ from pathlib import Path
 import datetime
 import json
 import cgi
-from bokeh.plotting import figure, ColumnDataSource
-from bokeh.embed import components
-from bokeh.models import HoverTool
-import csv
-import pandas as pd
 from PIL import Image
 import base64
 from io import BytesIO
@@ -16,10 +11,6 @@ from io import BytesIO
 from exprec import html_utils
 from exprec import constants as c
 from exprec import utils
-
-
-FIGURE_WIDTH = 600
-FIGURE_HEIGHT = 400
 
 
 def create_experiment_div(uuid):
@@ -52,13 +43,13 @@ def create_experiment_div(uuid):
         doc.stag('hr')
 
         content_by_tab_name = collections.OrderedDict()
-        content_by_tab_name[icon_title('eye', 'Summary')] = create_summary(uuid, path, experiment_json)
-        content_by_tab_name[icon_title('terminal', 'Output')] = create_output(path)
-        content_by_tab_name[icon_title('code', 'Code')] = create_code(uuid, path, experiment_json)
-        content_by_tab_name[icon_title('cube', 'Packages')] = create_packages(path)
-        content_by_tab_name[icon_title('chart-bar', 'Parameters')] = create_parameters(experiment_json)
-        content_by_tab_name[icon_title('chart-area', 'Charts')] = create_charts(path)
-        content_by_tab_name[icon_title('image', 'Images')] = create_images(path)
+        content_by_tab_name[html_utils.icon_title('eye', 'Summary')] = create_summary(uuid, path, experiment_json)
+        content_by_tab_name[html_utils.icon_title('terminal', 'Output')] = create_output(path)
+        content_by_tab_name[html_utils.icon_title('code', 'Code')] = create_code(uuid, path, experiment_json)
+        content_by_tab_name[html_utils.icon_title('cube', 'Packages')] = create_packages(path)
+        content_by_tab_name[html_utils.icon_title('chart-bar', 'Parameters')] = create_parameters(experiment_json)
+        content_by_tab_name[html_utils.icon_title('chart-area', 'Charts')] = html_utils.create_charts([uuid])
+        content_by_tab_name[html_utils.icon_title('image', 'Images')] = create_images(path)
 
         content_by_tab_name = collections.OrderedDict([(key, html_utils.margin(value)) for key, value in content_by_tab_name.items()])
 
@@ -69,8 +60,6 @@ def create_experiment_div(uuid):
     return doc.getvalue()
 
 
-def icon_title(icon_name, title):
-    return html_utils.fa_icon(icon_name) + ' ' + title
 
 
 def create_summary(uuid, path, experiment_json):
@@ -99,7 +88,6 @@ def create_summary(uuid, path, experiment_json):
 
     items = [
         ('Status', html_utils.get_status_icon_tag(status) + ' ' + status),
-        ('Name', experiment_json['name']),
         ('ID', html_utils.monospace(uuid)),
         ('Title<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#titleModal">Edit</button>', '<div id="title-div">{}</div>'.format(experiment_json['title'])),
         ('Description<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#descriptionModal">Edit</button>', '<div id="description-div"></div>'),
@@ -110,6 +98,7 @@ def create_summary(uuid, path, experiment_json):
         ('End', end.strftime('%Y-%m-%d %H:%M:%S') if end is not None else None),
         ('Tags', ' '.join([html_utils.badge(tag) for tag in tags])),
         ('Arguments', html_utils.monospace(' '.join(experiment_json['arguments']))),
+        ('Name', experiment_json['name']),
         ('File space', utils.get_file_space_representation(str(path/c.FILES_FOLDER))),
         ('Parents', html_utils.monospace(' '.join(parents))),
         ('Exception', html_utils.monospace(exception) if exception is not None else None),
@@ -394,16 +383,16 @@ def create_modal_html(uuid, experiment_json):
 
       <script>
         var converter = new showdown.Converter();
-        $('#descriptionTextArea').text('{description}');
-        $('#conclusionTextArea').text('{conclusion}');
-        $('#description-div').html(converter.makeHtml('{description}'));
-        $('#conclusion-div').html(converter.makeHtml('{conclusion}'));
+        $('#descriptionTextArea').text(`{description}`);
+        $('#conclusionTextArea').text(`{conclusion}`);
+        $('#description-div').html(converter.makeHtml(`{description}`));
+        $('#conclusion-div').html(converter.makeHtml(`{conclusion}`));
       </script>
     """.format(
         uuid=uuid, 
         title=experiment_json['title'], 
-        description=experiment_json['description'].replace('\n', '\\n'), 
-        conclusion=experiment_json['conclusion'].replace('\n', '\\n')
+        description=experiment_json['description'], 
+        conclusion=experiment_json['conclusion'],
     )
 
     return html
