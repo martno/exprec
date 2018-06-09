@@ -161,7 +161,7 @@ def create_charts(uuids):
 
     for scalar_name in scalar_names:
         plot = figure(
-            tools=[hover], 
+            tools=[hover, 'reset', 'pan', 'wheel_zoom', 'box_zoom'], 
             title=scalar_name,
             x_axis_label='Step',
             width=FIGURE_WIDTH,
