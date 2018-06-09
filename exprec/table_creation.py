@@ -16,17 +16,34 @@ COLUMNS = [
     'Show',
     'Status',
     'PID',
-    'Name',
+    'ID',
     'Title',
     'Filename',
     'Duration',
     'Start',
     'End',
     'Tags',
+    'Name',
     'File space',
-    'ID',
     'Git commit',
 ]
+
+CLASSES_BY_COLUMN = {
+    'Select': ['hidden-title'],
+    'Show': ['hidden-title'],
+    'Status': ['hidden-title'],
+    'PID': ['toggle', 'hidden-column'],
+    'ID': ['toggle'],
+    'Title': ['toggle'],
+    'Filename': ['toggle'],
+    'Duration': ['toggle'],
+    'Start': ['toggle'],
+    'End': ['toggle', 'hidden-column'],
+    'Tags': ['toggle'],
+    'Name': ['toggle', 'hidden-column'],
+    'File space': ['toggle'],
+    'Git commit': ['toggle'],
+}
 
 
 def create_table_from_uuids(uuids, path, filters):
@@ -46,7 +63,10 @@ def create_table_from_uuids(uuids, path, filters):
         procedure_item_by_column = create_procedure_item_by_column(uuid, path/uuid, metadata, all_scalars, all_params)
         procedure_item_by_column_list.append(procedure_item_by_column)
     
-    return html_utils.create_table(COLUMNS + all_scalars + all_params, procedure_item_by_column_list, id='experiment-table')
+    classes_by_dynamic_columns = {column: ['toggle', 'hidden-column'] for column in all_scalars + all_params}
+    classes_by_column = {**CLASSES_BY_COLUMN, **classes_by_dynamic_columns}
+
+    return html_utils.create_table(COLUMNS + all_scalars + all_params, procedure_item_by_column_list, id='experiment-table', classes_by_column=classes_by_column)
 
 
 def show_experiment(metadata, filters):
@@ -91,14 +111,14 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
         'PID': html_utils.fa_icon(pid_icon_name) + ' ' + str(experiment_pid),
         'Name': name if len(name) > 0 else None,
         'Title': metadata['title'] if metadata['title'] else None,
-        'Filename': html_utils.monospace(html_utils.color_circle_and_string(metadata['filename'])),
+        'Filename': html_utils.color_circle_and_string(metadata['filename']),
         'Duration': str(duration),
         'Start': start.strftime('%Y-%m-%d %H:%M:%S'),
         'End': end.strftime('%Y-%m-%d %H:%M:%S') if end is not None else None,
         'Tags': ' '.join([html_utils.badge(tag) for tag in tags]),
         'File space': file_space,
-        'ID': html_utils.monospace(html_utils.color_circle(uuid) + ' ' + utils.get_short_uuid(uuid)),
-        'Git commit': html_utils.monospace(html_utils.color_circle_and_string(metadata['git']['short'])) if metadata['git'] is not None else None,
+        'ID': html_utils.color_circle(uuid) + ' ' + utils.get_short_uuid(uuid),
+        'Git commit': html_utils.color_circle_and_string(metadata['git']['short']) if metadata['git'] is not None else None,
     }
 
     for scalar_name in all_scalars:

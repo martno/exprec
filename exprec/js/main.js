@@ -216,10 +216,26 @@ function loadMain(whitelist, blacklist) {
         var table = $('#experiment-table').DataTable({
             dom: 'Bfrtip',
             stateSave: true,
-            buttons: [
-                'columnsToggle'
-            ],
-            "order": [[ 8, "desc" ]]  // 'Start' column
+            stateDuration: 60 * 60 * 24 * 7,
+            buttons: [ {
+                extend: 'columnsToggle',
+                columns: '.toggle'
+            } ],
+            "order": [[ 8, "desc" ]],  // 'Start' column
+            columnDefs: [
+                {
+                    targets: 'hidden-title',
+                    sortable: false,
+                    searchable: false,
+                    width: "0px",
+                    title: " "
+                },
+                {
+                    targets: 'hidden-column',
+                    visible: false
+                }
+
+            ]
         });
     });
 }

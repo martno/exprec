@@ -46,19 +46,23 @@ def icon_title(icon_name, title):
     return fa_icon(icon_name) + ' ' + title
 
 
-def create_table(columns, item_by_column_list, id, attrs=None):
+def create_table(columns, item_by_column_list, id, attrs=None, classes_by_column=None):
     if attrs is None:
         attrs = [{} for _ in range(len(columns))]
     assert len(attrs) == len(columns), (len(attrs), len(columns))
 
+    if classes_by_column is None:
+        classes_by_column = {column: [] for column in columns}
+
     doc, tag, text = Doc().tagtext()
 
     with tag('small'):
-        with tag('table', klass='table', id=id):
+        with tag('table', klass='table display', id=id):
             with tag('thead'):
                 with tag('tr'):
                     for column in columns:
                         with tag('th', scope='col'):
+                            doc.attr(klass=' '.join(classes_by_column[column]))
                             doc.asis(column)
 
             with tag('tbody'):
@@ -66,7 +70,7 @@ def create_table(columns, item_by_column_list, id, attrs=None):
                     with tag('tr'):
                         for column, attr in zip(columns, attrs):
                             with tag('td', *attr):
-                                item = get(item_by_column[column], '<div style="color: #B2B2B2;">N/A</div>')
+                                item = get(item_by_column[column], default='<div style="color: #B2B2B2;">N/A</div>')
                                 doc.asis(item)
 
     return doc.getvalue()            
