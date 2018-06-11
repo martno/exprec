@@ -46,7 +46,7 @@ def icon_title(icon_name, title):
     return fa_icon(icon_name) + ' ' + title
 
 
-def create_table(columns, item_by_column_list, id, attrs=None, classes_by_column=None):
+def create_table(columns, item_by_column_list, id, attrs=None, classes_by_column=None, extra_ths=()):
     if attrs is None:
         attrs = [{} for _ in range(len(columns))]
     assert len(attrs) == len(columns), (len(attrs), len(columns))
@@ -59,6 +59,12 @@ def create_table(columns, item_by_column_list, id, attrs=None, classes_by_column
     with tag('small'):
         with tag('table', klass='table display', id=id):
             with tag('thead'):
+                with tag('tr'):
+                    for name, colspan in extra_ths:
+                        with tag('th'):
+                            doc.attr(colspan=colspan)
+                            text(name)
+
                 with tag('tr'):
                     for column in columns:
                         with tag('th', scope='col'):
