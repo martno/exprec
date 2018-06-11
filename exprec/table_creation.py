@@ -18,6 +18,8 @@ COLUMNS = [
     'Show',
     'Status',
     'PID',
+    'infoicon',
+    'lightbulbicon',
     'ID',
     'Title',
     'Filename',
@@ -40,6 +42,8 @@ CLASSES_BY_COLUMN = {
     'Show': ['hidden-title'],
     'Status': ['hidden-title'],
     'PID': ['toggle', 'hidden-column'],
+    'infoicon': ['hidden-title'],
+    'lightbulbicon': ['hidden-title'],
     'ID': ['toggle'],
     'Title': ['toggle'],
     'Filename': ['toggle'],
@@ -115,11 +119,19 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
     pids = utils.get_pids()
     pid_icon_name = 'fas fa-play text-success' if experiment_pid in pids else 'fas fa-stop text-danger'
 
+    # Set lightbulb class:
+    if metadata['status'] == 'running':
+        lightbulb_class = 'text-{}'.format('primary' if metadata['conclusion'] else 'secondary')
+    else:
+        lightbulb_class = 'text-{}'.format('primary' if metadata['conclusion'] else 'danger')
+
     procedure_item_by_column = {
         'DetailsControl': '',
         'Select': '<input class="experiment-row" type="checkbox" value="" id="checkbox-{}">'.format(uuid),
         'Show': "<button class='btn btn-primary btn-xs experiment-button' id='button-{}'>Show</button>".format(uuid),
         'Status': html_utils.get_status_icon_tag(status),
+        'infoicon': html_utils.icon('fas fa-info-circle {}'.format('text-primary' if metadata['description'] else 'text-secondary')),
+        'lightbulbicon': html_utils.icon('fas fa-lightbulb {}'.format(lightbulb_class)),
         'PID': html_utils.fa_icon(pid_icon_name) + ' ' + str(experiment_pid),
         'Name': name if len(name) > 0 else None,
         'Title': metadata['title'] if metadata['title'] else None,

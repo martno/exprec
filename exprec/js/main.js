@@ -221,7 +221,7 @@ function loadMain(whitelist, blacklist) {
                 extend: 'columnsToggle',
                 columns: '.toggle'
             } ],
-            "order": [[ 9, "desc" ]],  // 'Start' column
+            "order": [[ 11, "desc" ]],  // 'Start' column
             columnDefs: [
                 {
                     targets: 'hidden-title',
@@ -261,23 +261,23 @@ function format ( d ) {
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
         '<tr>'+
             '<td>Title</td>'+
-            '<td>'+ d[6] +'</td>'+
+            '<td>'+ d[8] +'</td>'+
         '</tr>'+
         '<tr>'+
-            '<td>Description:</td>'+
-            '<td>'+ d[15] +'</td>'+
-        '</tr>'+
-        '<tr>'+
-            '<td>Conclusion:</td>'+
-            '<td>'+ d[16] +'</td>'+
-        '</tr>'+
-        '<tr>'+
-            '<td>Arguments:</td>'+
+            '<td><i class="fas fa-info-circle"></i> Description:</td>'+
             '<td>'+ d[17] +'</td>'+
         '</tr>'+
         '<tr>'+
+            '<td><i class="fas fa-lightbulb"></i> Conclusion:</td>'+
+            '<td>'+ d[18] +'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Arguments:</td>'+
+            '<td>'+ d[19] +'</td>'+
+        '</tr>'+
+        '<tr>'+
             '<td>Exception:</td>'+
-            '<td>' + d[18] + '</td>'+
+            '<td>' + d[20] + '</td>'+
         '</tr>'+
     '</table>';
 }
