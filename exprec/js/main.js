@@ -1,5 +1,7 @@
 "use strict";
 
+var UUID_INDEX = 1;
+
 
 $(document).ready(function() {
     loadMain([], ['archive']);
@@ -7,24 +9,21 @@ $(document).ready(function() {
     addTags();
 
     $('.button-archive').click(function() {
-        if (getNumSelectedExperiments() == 0) {
+        var selectedUuids = getSelectedUuids();
+        if (selectedUuids == 0) {
             alert('Please select at least one experiment');
             return;
         }
 
-        $('.experiment-row').each(function() {
-            if ($(this).is(':checked')) {
-                var checkboxId = $(this).attr('id');
-                var id = checkboxId.replace('checkbox-', '');
-                var _ = postJson('/add_tags/' + id, ["archive"]);
-            }
-
-            loadMain([], ['archive']);
-        });
+        for (let uuid of selectedUuids) {
+            var _ = postJson('/add_tags/' + uuid, ["archive"]);
+        }
+        loadMain([], ['archive']);
     });
 
     $('.button-delete').click(function() {
-        if (getNumSelectedExperiments() == 0) {
+        var selectedUuids = getSelectedUuids();
+        if (selectedUuids == 0) {
             alert('Please select at least one experiment');
             return;
         }
@@ -32,20 +31,16 @@ $(document).ready(function() {
         var doDelete = confirm("Do you want to delete all selected experiments?");
 
         if (doDelete == true) {
-            $('.experiment-row').each(function() {
-                if ($(this).is(':checked')) {
-                    var checkboxId = $(this).attr('id');
-                    var id = checkboxId.replace('checkbox-', '');
-                    var _ = deleteRequest('/experiment/' + id);
-                }
-
-                loadMain([], ['archive']);
-            });
+            for (let uuid of selectedUuids) {
+                var _ = deleteRequest('/experiment/' + uuid);
+            }
+            loadMain([], ['archive']);
         }
     });
 
     $('.button-delete-files').click(function() {
-        if (getNumSelectedExperiments() == 0) {
+        var selectedUuids = getSelectedUuids();
+        if (selectedUuids == 0) {
             alert('Please select at least one experiment');
             return;
         }
@@ -53,20 +48,16 @@ $(document).ready(function() {
         var doDeleteFiles = confirm("Do you want to delete all files associated with selected experiments?");
 
         if (doDeleteFiles == true) {
-            $('.experiment-row').each(function() {
-                if ($(this).is(':checked')) {
-                    var checkboxId = $(this).attr('id');
-                    var id = checkboxId.replace('checkbox-', '');
-                    var _ = $.get('/deletefiles/' + id);
-                }
-
-                loadMain([], ['archive']);
-            });
+            for (let uuid of selectedUuids) {
+                var _ = $.get('/deletefiles/' + uuid);
+            }
+            loadMain([], ['archive']);
         }
     });
 
     $('.button-add-tags').click(function() {
-        if (getNumSelectedExperiments() == 0) {
+        var selectedUuids = getSelectedUuids();
+        if (selectedUuids == 0) {
             alert('Please select at least one experiment');
             return;
         }
@@ -74,19 +65,15 @@ $(document).ready(function() {
         var tags = prompt("Enter tags to add (separate by space)");
         tags = tags.split(" ");
 
-        $('.experiment-row').each(function() {
-            if ($(this).is(':checked')) {
-                var checkboxId = $(this).attr('id');
-                var id = checkboxId.replace('checkbox-', '');
-                var _ = postJson('/add_tags/' + id, tags);
-            }
-
-            loadMain([], ['archive']);
-        });
+        for (let uuid of selectedUuids) {
+            var _ = postJson('/add_tags/' + uuid, tags);
+        }
+        loadMain([], ['archive']);
     });
 
     $('.button-remove-tags').click(function() {
-        if (getNumSelectedExperiments() == 0) {
+        var selectedUuids = getSelectedUuids();
+        if (selectedUuids == 0) {
             alert('Please select at least one experiment');
             return;
         }
@@ -94,15 +81,10 @@ $(document).ready(function() {
         var tags = prompt("Enter tags to remove (separate by space)");
         tags = tags.split(" ");
 
-        $('.experiment-row').each(function() {
-            if ($(this).is(':checked')) {
-                var checkboxId = $(this).attr('id');
-                var id = checkboxId.replace('checkbox-', '');
-                var _ = postJson('/remove_tags/' + id, tags);
-            }
-
-            loadMain([], ['archive']);
-        });
+        for (let uuid of selectedUuids) {
+            var _ = postJson('/remove_tags/' + uuid, tags);
+        }
+        loadMain([], ['archive']);
     });
 
     $('#show-inbox').click(function() {
@@ -116,22 +98,15 @@ $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
 
     $('.button-compare').click(function() {
-        if (getNumSelectedExperiments() == 0) {
+        var selectedUuids = getSelectedUuids();
+        if (selectedUuids == 0) {
             alert('Please select at least one experiment');
             return;
         }
 
         var checked = [];
 
-        $('.experiment-row').each(function() {
-            if ($(this).is(':checked')) {
-                var checkboxId = $(this).attr('id');
-                var id = checkboxId.replace('checkbox-', '');
-                checked.push(id);
-            }
-        });
-
-        var promise = postJson('/compare-experiments', checked);
+        var promise = postJson('/compare-experiments', selectedUuids);
 
         promise.done(function(result) {
             var html = result["html"];
@@ -156,15 +131,15 @@ $(document).ready(function() {
 });
 
 
-function getNumSelectedExperiments() {
-    var numSelected = 0;
-    $('.experiment-row').each(function() {
-        if ($(this).is(':checked')) {
-            numSelected += 1;
-        }
-    });
+function getSelectedUuids() {
+    var uuids = new Array();
+    var table = $('#experiment-table').DataTable();  // Obtains the existing datatable in #experiment-table.
+    var rowData = table.rows('.selected').data();
 
-    return numSelected;
+    for (var i=0; i<rowData.length; i++) {
+        uuids.push(rowData[i][UUID_INDEX]);
+    }
+    return uuids;
 }
 
 
@@ -251,6 +226,10 @@ function loadMain(whitelist, blacklist) {
                 row.child( format(row.data()) ).show();
                 tr.addClass('shown');
             }
+        } );
+
+        $('#experiment-table tbody').on( 'click', 'tr', function () {
+            $(this).toggleClass('selected');
         } );
     });
 }

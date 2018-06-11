@@ -14,7 +14,7 @@ METADATA_JSON_FILENAME = 'experiment.json'
 
 COLUMNS = [
     'DetailsControl',
-    'Select',
+    'UUID',
     'Show',
     'Status',
     'PID',
@@ -38,7 +38,7 @@ COLUMNS = [
 
 CLASSES_BY_COLUMN = {
     'DetailsControl': ['hidden-title', 'details-control'],
-    'Select': ['hidden-title'],
+    'UUID': ['hidden-column'],
     'Show': ['hidden-title'],
     'Status': ['hidden-title'],
     'PID': ['toggle', 'hidden-column'],
@@ -127,7 +127,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
 
     procedure_item_by_column = {
         'DetailsControl': '',
-        'Select': '<input class="experiment-row" type="checkbox" value="" id="checkbox-{}">'.format(uuid),
+        'UUID': uuid,
         'Show': "<button class='btn btn-primary btn-xs experiment-button' id='button-{}'>Show</button>".format(uuid),
         'Status': html_utils.get_status_icon_tag(status),
         'infoicon': html_utils.icon('fas fa-info-circle {}'.format('text-primary' if metadata['description'] else 'text-secondary')),

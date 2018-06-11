@@ -57,6 +57,8 @@ def dashboard(host=None, port=None):
 
         else:
             raise ValueError('Unknown method: ' + request.method)
+        
+        return id
 
     @app.route('/deletefiles/<id>', methods=['GET'])
     def deletefiles(id):
@@ -78,6 +80,8 @@ def dashboard(host=None, port=None):
 
         with utils.UpdateJsonFile(str(experiment_json_path)) as experiment_json:
             experiment_json[text_id] = request.json
+        
+        return id
 
     @app.route('/compare-experiments', methods=['POST'])
     def compare_experiments():
@@ -107,6 +111,8 @@ def dashboard(host=None, port=None):
             for tag in request.json:
                 if tag not in experiment_json['tags']:
                     experiment_json['tags'].append(tag)
+        
+        return id
 
     @app.route('/remove_tags/<id>', methods=['POST'])
     def remove_tags(id):
@@ -117,5 +123,7 @@ def dashboard(host=None, port=None):
         with utils.UpdateJsonFile(str(experiment_json_path)) as experiment_json:
             tags = experiment_json['tags']
             experiment_json['tags'] = list(set(tags) - set(tags_to_remove))
+        
+        return id
 
     app.run(host=host, port=port, debug=True)
