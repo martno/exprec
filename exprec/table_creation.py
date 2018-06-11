@@ -2,6 +2,7 @@ import datetime
 from yattag import Doc
 from pathlib import Path
 import subprocess
+import markdown
 
 from exprec import utils
 from exprec import html_utils
@@ -12,6 +13,7 @@ N_SIGNIFICANT_DIGITS = 4
 METADATA_JSON_FILENAME = 'experiment.json'
 
 COLUMNS = [
+    'DetailsControl',
     'Select',
     'Show',
     'Status',
@@ -26,9 +28,14 @@ COLUMNS = [
     'Name',
     'File space',
     'Git commit',
+    'Description',
+    'Conclusion',
+    'Arguments',
+    'Exception',
 ]
 
 CLASSES_BY_COLUMN = {
+    'DetailsControl': ['hidden-title', 'details-control'],
     'Select': ['hidden-title'],
     'Show': ['hidden-title'],
     'Status': ['hidden-title'],
@@ -43,6 +50,10 @@ CLASSES_BY_COLUMN = {
     'Name': ['toggle', 'hidden-column'],
     'File space': ['toggle'],
     'Git commit': ['toggle'],
+    'Description': ['hidden-column'],
+    'Conclusion': ['hidden-column'],
+    'Arguments': ['hidden-column'],
+    'Exception': ['hidden-column'],
 }
 
 
@@ -105,6 +116,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
     pid_icon_name = 'fas fa-play text-success' if experiment_pid in pids else 'fas fa-stop text-danger'
 
     procedure_item_by_column = {
+        'DetailsControl': '',
         'Select': '<input class="experiment-row" type="checkbox" value="" id="checkbox-{}">'.format(uuid),
         'Show': "<button class='btn btn-primary btn-xs experiment-button' id='button-{}'>Show</button>".format(uuid),
         'Status': html_utils.get_status_icon_tag(status),
@@ -119,6 +131,10 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
         'File space': file_space,
         'ID': html_utils.color_circle(uuid) + ' ' + utils.get_short_uuid(uuid),
         'Git commit': html_utils.color_circle_and_string(metadata['git']['short']) if metadata['git'] is not None else None,
+        'Description': markdown.markdown(metadata['description']),
+        'Conclusion': markdown.markdown(metadata['conclusion']),
+        'Arguments': html_utils.monospace(' '.join(metadata['arguments'])),
+        'Exception': html_utils.monospace('{}: {}'.format(metadata['exceptionType'], metadata['exceptionValue']) if metadata['exceptionType'] is not None else ''),
     }
 
     for scalar_name in all_scalars:

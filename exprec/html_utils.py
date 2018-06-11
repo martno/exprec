@@ -70,6 +70,7 @@ def create_table(columns, item_by_column_list, id, attrs=None, classes_by_column
                     with tag('tr'):
                         for column, attr in zip(columns, attrs):
                             with tag('td', *attr):
+                                doc.attr(klass=' '.join(classes_by_column[column]))
                                 item = get(item_by_column[column], default='<div style="color: #B2B2B2;">N/A</div>')
                                 doc.asis(item)
 

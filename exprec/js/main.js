@@ -214,14 +214,14 @@ function loadMain(whitelist, blacklist) {
         });
 
         var table = $('#experiment-table').DataTable({
-            dom: 'Bfrtip',
+            dom: 'Blfrtip',
             stateSave: true,
             stateDuration: 60 * 60 * 24 * 7,
             buttons: [ {
                 extend: 'columnsToggle',
                 columns: '.toggle'
             } ],
-            "order": [[ 8, "desc" ]],  // 'Start' column
+            "order": [[ 9, "desc" ]],  // 'Start' column
             columnDefs: [
                 {
                     targets: 'hidden-title',
@@ -237,7 +237,49 @@ function loadMain(whitelist, blacklist) {
 
             ]
         });
+
+        // Add event listener for opening and closing details
+        $('#experiment-table').on('click', 'td.details-control', function() {
+            var tr = $(this).closest('tr');
+            var row = table.row( tr );
+        
+            if ( row.child.isShown() ) {
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                row.child( format(row.data()) ).show();
+                tr.addClass('shown');
+            }
+        } );
     });
+}
+
+
+function format ( d ) {
+    // `d` is the original data object for the row
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr>'+
+            '<td>Title</td>'+
+            '<td>'+ d[6] +'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Description:</td>'+
+            '<td>'+ d[15] +'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Conclusion:</td>'+
+            '<td>'+ d[16] +'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Arguments:</td>'+
+            '<td>'+ d[17] +'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Exception:</td>'+
+            '<td>' + d[18] + '</td>'+
+        '</tr>'+
+    '</table>';
 }
 
 

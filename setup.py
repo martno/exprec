@@ -12,6 +12,7 @@ requirements = [
     'pandas>=0.22.0',
     'GitPython>=2.1.10',
     'colorhash>=1.0.2',
+    'markdown>=2.6.11',
 ]
 
 setuptools.setup(
