@@ -6,7 +6,7 @@ with open('README.md') as readme_file:
 requirements = [
     'Flask>=0.12.2',
     'attrs>=17.4.0',
-    'bokeh>=0.12.15',
+    'bokeh==0.12.15',  # Has to be exact version, since this version has to match with the bokeh version in index.html. 
     'yattag>=1.10.0',
     'humanize>=0.5.1',
     'pandas>=0.22.0',
