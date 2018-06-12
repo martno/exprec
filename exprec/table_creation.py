@@ -3,6 +3,7 @@ from yattag import Doc
 from pathlib import Path
 import subprocess
 import markdown
+import psutil
 
 from exprec import utils
 from exprec import html_utils
@@ -118,7 +119,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
     file_space = utils.get_file_space_representation(str(path/c.FILES_FOLDER))
 
     experiment_pid = int(metadata['pid'])
-    pids = utils.get_pids()
+    pids = psutil.pids()
     pid_icon_name = 'fas fa-play text-success' if experiment_pid in pids else 'fas fa-stop text-danger'
 
     # Set lightbulb class:

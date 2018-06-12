@@ -13,6 +13,7 @@ requirements = [
     'GitPython>=2.1.10',
     'colorhash>=1.0.2',
     'markdown>=2.6.11',
+    'psutil>=5.4.6',
 ]
 
 setuptools.setup(

@@ -160,10 +160,6 @@ def get_class_name(object):
     return object.__class__.__name__
 
 
-def get_pids():
-    return [int(pid) for pid in os.listdir('/proc') if pid.isdigit()]
-
-
 def load_experiment_json(uuid):
     path = Path(c.DEFAULT_PARENT_FOLDER)/uuid/c.METADATA_JSON_FILENAME
     return load_json(str(path))
