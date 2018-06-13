@@ -35,7 +35,7 @@ In your terminal:
 exprec
 ```
 
-Now visit http://localhost:5000/ in your browser to see the dashboard.
+Now visit http://localhost:9090/ in your browser to see the dashboard. If the client and exprec server is running on different machines, set the flag `--host=0.0.0.0`. 
 
 ### More code examples
 
@@ -52,7 +52,7 @@ with Experiment(name='experiment-1', tags=['tag1', 'tag2']) as experiment:
         fp.write('test\n')
         # This creates a file in the experiment's folder (`.experiments/<experiment-id>/files/filename.txt`). It can be
         # accessed by other experiments using
-        # `with experiment.open('filename.txt', mode='w', uuid=previous_experiment_uuid) as fp:`.
+        # `with experiment.open('filename.txt', mode='r', uuid=previous_experiment_uuid) as fp:`.
         # When opening a previous experiment's file, the previous experiment will be referred to as 
         # the current experiment's parent (shown in the summary in the dashboard). 
 
