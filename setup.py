@@ -14,6 +14,7 @@ requirements = [
     'colorhash>=1.0.2',
     'markdown>=2.6.11',
     'psutil>=5.4.6',
+    'Pillow>=5.1.0',
 ]
 
 setuptools.setup(
