@@ -209,6 +209,8 @@ def create_output(path):
     with filepath.open() as fp:
         output = fp.read()
     
+    output = cgi.escape(output)
+
     return html_utils.monospace(output)
 
 
