@@ -154,7 +154,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
     for scalar_name in all_scalars:
         value = get_scalar_value(path, scalar_name)
         if value is not None:
-            value = str(round_to_significant_digits(value, N_SIGNIFICANT_DIGITS))
+            value = str(utils.round_to_significant_digits(value, N_SIGNIFICANT_DIGITS))
         procedure_item_by_column[scalar_name] = value
 
     params = metadata['parameters']
@@ -162,7 +162,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
         if name in params:
             value = params[name]
             if type(value) in (int, float):
-                value = round_to_significant_digits(value, N_SIGNIFICANT_DIGITS)
+                value = utils.round_to_significant_digits(value, N_SIGNIFICANT_DIGITS)
             value = str(value)
         else:
             value = None
@@ -200,9 +200,4 @@ def get_scalar_value(path, scalar_name):
 
 def get_last_line_in_file(filepath):
     return subprocess.check_output(['tail', '-1', filepath]).decode('utf-8')
-
-
-def round_to_significant_digits(value, n_digits):
-    format_string = '%.{}g'.format(n_digits)
-    return float(format_string % value)
 

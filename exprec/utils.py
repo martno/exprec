@@ -198,3 +198,8 @@ def get_full_uuid(short_uuid):
 def uuid1_to_datetime(uuid1_string):
     uuid1 = uuid.UUID(uuid1_string)
     return datetime.datetime(1582, 10, 15) + datetime.timedelta(microseconds=uuid1.time//10)
+
+
+def round_to_significant_digits(value, n_digits):
+    format_string = '%.{}g'.format(n_digits)
+    return float(format_string % value)

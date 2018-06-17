@@ -22,6 +22,8 @@ FIGURE_HEIGHT = 400
 
 N_A = '<div style="color: #B2B2B2;">N/A</div>'
 
+N_SIGNIFICANT_DIGITS = 4
+
 
 def monospace(string):
     return "<pre>{}</pre>".format(string)
@@ -240,7 +242,10 @@ def create_parameters(uuids):
     for param in all_params:
         row = {'Parameter': param}
         for uuid, params in params_by_uuid.items():
-            row[uuid] = str(params[param]) if param in params else None
+            value = params[param] if param in params else None
+            if type(value) in (int, float):
+                value = str(utils.round_to_significant_digits(value, N_SIGNIFICANT_DIGITS))
+            row[uuid] = value
         rows.append(row)
     
     # The last column has width 100%:
