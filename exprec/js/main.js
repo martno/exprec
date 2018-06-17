@@ -89,10 +89,12 @@ $(document).ready(function() {
 
     $('#show-inbox').click(function() {
         loadMain([], ['archive']);
+        $('.button-go-back').click();
     });
 
     $('#show-archive').click(function() {
         loadMain(['archive'], []);
+        $('.button-go-back').click();
     });
 
     $('[data-toggle="tooltip"]').tooltip();
@@ -270,6 +272,7 @@ function addTags() {
 
             $('#tag-' + tag).click(function() {
                 loadMain([tag], ['archive']);
+                $('.button-go-back').click();
             });
         }
     });
