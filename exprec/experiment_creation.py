@@ -324,7 +324,7 @@ def create_modal_html(uuid, experiment_json):
               <h5 class="modal-title" id="titleModalLabel">Title</h5>
             </div>
             <div class="modal-body">
-              <input type="text" class="form-control" id="titleTextInput" value='{title}'></textarea>
+              <input type="text" class="form-control" id="titleTextInput" value='{title}'></input>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
