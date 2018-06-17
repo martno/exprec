@@ -339,7 +339,7 @@ def create_modal_html(uuid, experiment_json):
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-" id="ModalLabel">Description</h5>
+              <h5 class="modal-" id="ModalLabel">Description (supports Markdown)</h5>
             </div>
             <div class="modal-body">
               <textarea class="form-control" id="descriptionTextArea" rows="18" style="font-family: monospace;"></textarea>
@@ -357,7 +357,7 @@ def create_modal_html(uuid, experiment_json):
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-conclusion" id="conclusionModalLabel">Conclusion</h5>
+              <h5 class="modal-conclusion" id="conclusionModalLabel">Conclusion (supports Markdown)</h5>
             </div>
             <div class="modal-body">
               <textarea class="form-control" id="conclusionTextArea" rows="18" style="font-family: monospace;"></textarea>
