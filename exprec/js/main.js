@@ -163,6 +163,8 @@ function deleteRequest(url) {
 
 
 function loadMain(whitelist, blacklist) {
+    $('#experiment-table-div').html('Loading...');
+
     var promise = postJson('/experiment-table', {
         'whitelist': whitelist,
         'blacklist': blacklist
