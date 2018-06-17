@@ -129,6 +129,15 @@ $(document).ready(function() {
         });
     });
 
+    $('.button-toggle').click(function() {
+        var table = $('#experiment-table').DataTable();  // Obtains the existing datatable in #experiment-table.
+        if (getSelectedUuids().length > 0) {
+            table.rows().deselect();
+        } else {
+            table.rows().select();
+        }
+    });
+
     showdown.setOption('simplifiedAutoLink', true);
 });
 
@@ -211,8 +220,10 @@ function loadMain(whitelist, blacklist) {
                     targets: 'hidden-column',
                     visible: false
                 }
-
-            ]
+            ],
+            select: {
+                style: 'multi'
+            }
         });
 
         // Add event listener for opening and closing details
