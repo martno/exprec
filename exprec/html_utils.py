@@ -75,9 +75,11 @@ def create_table(columns, item_by_column_list, id, attrs=None, classes_by_column
             <thead>
                 <tr>
                     {% for name, colspan in extra_ths %}
-                        <th colspan={{ colspan }}>
-                            {{ name }}
-                        </th>
+                        {% if colspan > 0 %}
+                            <th colspan={{ colspan }}>
+                                {{ name }}
+                            </th>
+                        {% endif %}
                     {% endfor %}
                 </tr>
                 <tr>
