@@ -29,14 +29,16 @@ SHORT_GIT_SHA_LENGTH = 7
 
 @attr.s
 class Experiment:
-    name = attr.ib(default='')
+    title = attr.ib(default='')
     tags = attr.ib(default=attr.Factory(list))
     verbose = attr.ib(default=True)
     exceptions_to_ignore = attr.ib(default=[KeyboardInterrupt])
     parent_folder = attr.ib(default=DEFAULT_PARENT_FOLDER)
+    name = attr.ib(default='')
 
     def __attrs_post_init__(self):
         self.name = self.name.strip()
+        self.title = self.title.strip()
 
         self.uuid = str(uuid.uuid1())  # Time UUID
         self.path = Path(self.parent_folder) / self.uuid
@@ -50,10 +52,14 @@ class Experiment:
         self.path.mkdir(exist_ok=False)
 
         if self.verbose:
-            name = self.name if len(self.name) > 0 else '(name N/A)'
-            print('Running experiment {} {}'.format(self.uuid, name))
+            string = 'Running experiment ' + utils.get_short_uuid(self.uuid)
+            if self.name:
+                string += " (alias '{}')".format(self.name)
+            if self.title:
+                string += ': ' + self.title
+            print(string)
         
-        setup_procedure(self.path, self.name, self.tags)
+        setup_procedure(self.path, self.name, self.title, self.tags)
 
         self._create_streams()
 
@@ -179,13 +185,13 @@ class MultiStream:
             stream.flush()
 
 
-def setup_procedure(path, name, tags):
-    create_metadata_json(path, name, tags)
+def setup_procedure(path, name, title, tags):
+    create_metadata_json(path, name, title, tags)
     create_pip_freeze_file(path)
     utils.copy_source_code(source_path='.', target_path=path/c.SOURCE_CODE_FOLDER)
 
 
-def create_metadata_json(path, name, tags):
+def create_metadata_json(path, name, title, tags):
     filename = sys.argv[0]
 
     metadata = {
@@ -202,7 +208,7 @@ def create_metadata_json(path, name, tags):
         'osVersion': '{} {}'.format(platform.system(), platform.release()),
         'exceptionType': None,
         'exceptionValue': None,
-        'title': '',
+        'title': title,
         'description': '',
         'conclusion': '',
         'pid': os.getpid(),
