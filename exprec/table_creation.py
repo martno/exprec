@@ -1,5 +1,4 @@
 import datetime
-from yattag import Doc
 from pathlib import Path
 import subprocess
 import markdown

@@ -7,7 +7,6 @@ requirements = [
     'Flask>=0.12.2',
     'attrs>=17.4.0',
     'bokeh==0.12.15',  # Has to be exact version, since this version has to match with the bokeh version in index.html. 
-    'yattag>=1.10.0',
     'humanize>=0.5.1',
     'pandas>=0.22.0',
     'GitPython>=2.1.10',
@@ -15,6 +14,7 @@ requirements = [
     'markdown>=2.6.11',
     'psutil>=5.4.6',
     'Pillow>=5.1.0',
+    'Jinja2>=2.10',
 ]
 
 setuptools.setup(
@@ -32,7 +32,7 @@ setuptools.setup(
     package_dir={'exprec': 'exprec'},
     package_data={
         'exprec': [
-            'index.html',
+            '*.html',
             'js/*',
             'css/*',
         ],

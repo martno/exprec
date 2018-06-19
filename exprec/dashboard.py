@@ -1,5 +1,4 @@
 from flask import Flask, send_from_directory, request, jsonify
-from yattag import Doc
 from pathlib import Path
 import json
 import shutil

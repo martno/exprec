@@ -1,4 +1,3 @@
-from yattag import Doc
 import collections
 from pathlib import Path
 import datetime
@@ -7,6 +6,7 @@ import cgi
 from PIL import Image
 import base64
 from io import BytesIO
+from jinja2 import Template
 
 from exprec import html_utils
 from exprec import constants as c
@@ -18,55 +18,49 @@ def create_experiment_div(uuid):
 
     experiment_json = utils.load_json(str(path/c.METADATA_JSON_FILENAME))
 
-    doc, tag, text = Doc().tagtext()
-    with tag('div'):
-        with tag('button', klass="btn btn-primary button-go-back", style="width: 61px;"):
-            doc.asis(html_utils.fa_icon('arrow-left'))
-        text(' ')
-        with tag('button', klass="btn btn-primary button-restore-source-code", style="width: 61px;"):
-            doc.asis(html_utils.fa_icon('file-code'))
-        doc.stag('hr')
+    template = Template('''
+    <div>
+        <button class="btn btn-primary button-go-back" style="width: 61px;">{{ fa_icon('arrow-left') }}</button>
+        <button class="btn btn-primary button-restore-source-code" style="width: 61px;">{{ fa_icon('file-code') }}</button>
+        <hr>
+        <div>
+            <h5>
+                {% if title %}
+                    {{ uuid_color }} {{ short_uuid }} - {{ title }}
+                {% else %}
+                    {{ uuid_color }} {{ short_uuid }}
+                {% endif %}
+            </h5>
+            {{ status_icon }} {{ filename }}<span style="display:inline-block; width: 16px;"></span>{{ tags }}
+        </div>
+        <hr>
+    </div>
+    ''')
 
-        with tag('h5'):
-            title = experiment_json['title']
-            if title:
-                line1 = '{} {} - {}'.format(html_utils.color_circle(uuid), utils.get_short_uuid(uuid), title)
-            else:
-                line1 = '{} {}'.format(html_utils.color_circle(uuid), utils.get_short_uuid(uuid))
-            doc.asis(line1)
+    tags = sorted(experiment_json['tags'])
+    header = template.render(fa_icon=html_utils.fa_icon, title=experiment_json['title'], uuid_color=html_utils.color_circle(uuid),
+        short_uuid=utils.get_short_uuid(uuid), filename=experiment_json['filename'],
+        tags=' '.join([html_utils.badge(tag) for tag in tags]))
 
-        doc.asis(html_utils.get_status_icon_tag(experiment_json['status']))
-        text(' ')
-        doc.asis(experiment_json['filename'])
-        doc.asis('<span style="display:inline-block; width: 16px;"></span>')
-        tags = sorted(experiment_json['tags'])
-        doc.asis(' '.join([html_utils.badge(tag) for tag in tags]))
+    content_by_tab_name = collections.OrderedDict()
+    content_by_tab_name[html_utils.icon_title('eye', 'Summary')] = create_summary(uuid, path, experiment_json)
+    content_by_tab_name[html_utils.icon_title('terminal', 'Output')] = create_output(path)
+    content_by_tab_name[html_utils.icon_title('code', 'Code')] = create_code(uuid, path, experiment_json)
+    content_by_tab_name[html_utils.icon_title('cube', 'Packages')] = create_packages(path)
+    content_by_tab_name[html_utils.icon_title('chart-bar', 'Parameters')] = html_utils.create_parameters([uuid])
+    content_by_tab_name[html_utils.icon_title('chart-area', 'Charts')] = html_utils.create_charts([uuid])
+    content_by_tab_name[html_utils.icon_title('image', 'Images')] = create_images(path)
 
-        doc.stag('hr')
+    content_by_tab_name = collections.OrderedDict([(key, html_utils.margin(value)) for key, value in content_by_tab_name.items()])
 
-        content_by_tab_name = collections.OrderedDict()
-        content_by_tab_name[html_utils.icon_title('eye', 'Summary')] = create_summary(uuid, path, experiment_json)
-        content_by_tab_name[html_utils.icon_title('terminal', 'Output')] = create_output(path)
-        content_by_tab_name[html_utils.icon_title('code', 'Code')] = create_code(uuid, path, experiment_json)
-        content_by_tab_name[html_utils.icon_title('cube', 'Packages')] = create_packages(path)
-        content_by_tab_name[html_utils.icon_title('chart-bar', 'Parameters')] = html_utils.create_parameters([uuid])
-        content_by_tab_name[html_utils.icon_title('chart-area', 'Charts')] = html_utils.create_charts([uuid])
-        content_by_tab_name[html_utils.icon_title('image', 'Images')] = create_images(path)
+    tabs_html = html_utils.create_tabs(content_by_tab_name, tabs_id='experiment-tabs')
 
-        content_by_tab_name = collections.OrderedDict([(key, html_utils.margin(value)) for key, value in content_by_tab_name.items()])
-
-        tabs_html = html_utils.create_tabs(content_by_tab_name, tabs_id='experiment-tabs')
-
-        doc.asis(tabs_html)
-
-    return doc.getvalue()
+    return header + tabs_html
 
 
 
 
 def create_summary(uuid, path, experiment_json):
-    doc, tag, text = Doc().tagtext()
-
     columns = ['Name', 'Value']
 
     status = experiment_json['status']

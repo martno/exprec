@@ -1,4 +1,3 @@
-from yattag import Doc
 from pathlib import Path
 import colorhash
 import pandas as pd
@@ -6,6 +5,7 @@ from bokeh.plotting import figure, ColumnDataSource
 from bokeh.embed import components
 from bokeh.models import HoverTool
 import bokeh.colors
+from jinja2 import Template
 
 from exprec import constants as c
 from exprec import utils
@@ -19,6 +19,8 @@ ICON_BY_STATUS = {
 
 FIGURE_WIDTH = 600
 FIGURE_HEIGHT = 400
+
+N_A = '<div style="color: #B2B2B2;">N/A</div>'
 
 
 def monospace(string):
@@ -54,70 +56,76 @@ def create_table(columns, item_by_column_list, id, attrs=None, classes_by_column
     if classes_by_column is None:
         classes_by_column = {column: [] for column in columns}
 
-    doc, tag, text = Doc().tagtext()
+    item_by_column_list = [
+        {column: item if item is not None else N_A for column, item in item_by_column.items()}
+        for item_by_column in item_by_column_list
+    ]
 
-    with tag('small'):
-        with tag('table', klass='table display', id=id):
-            with tag('thead'):
-                with tag('tr'):
-                    for name, colspan in extra_ths:
-                        with tag('th'):
-                            doc.attr(colspan=colspan)
-                            text(name)
+    temp_attrs = []
+    for attr in attrs:
+        attr_string = ' '.join('{}="{}"'.format(key, value) for key, value in attr)
+        temp_attrs.append(attr_string)
+    attrs = temp_attrs
 
-                with tag('tr'):
-                    for column in columns:
-                        with tag('th', scope='col'):
-                            doc.attr(klass=' '.join(classes_by_column[column]))
-                            doc.asis(column)
+    template = Template('''
+    <small>
+        <table class="table display" id={{ id }}>
+            <thead>
+                <tr>
+                    {% for name, colspan in extra_ths %}
+                        <th colspan={{ colspan }}>
+                            {{ name }}
+                        </th>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for column in columns %}
+                        <th scope="col" class="{{ ' '.join(classes_by_column[column]) }}">
+                            {{ column }}
+                        </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item_by_column in item_by_column_list %}
+                    <tr>
+                        {% for column, attr in zip(columns, attrs) %}
+                            <td class="{{ ' '.join(classes_by_column[column]) }}" {{ attr }}>
+                                {{ item_by_column[column] }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </small>
+    ''')
 
-            with tag('tbody'):
-                for item_by_column in item_by_column_list:
-                    with tag('tr'):
-                        for column, attr in zip(columns, attrs):
-                            with tag('td', *attr):
-                                doc.attr(klass=' '.join(classes_by_column[column]))
-                                item = get(item_by_column[column], default='<div style="color: #B2B2B2;">N/A</div>')
-                                doc.asis(item)
-
-    return doc.getvalue()            
-
-
-def get(value, default):
-    if value is None:
-        return default
-    return value
+    return template.render(id=id, extra_ths=extra_ths, columns=columns, item_by_column_list=item_by_column_list, 
+        attrs=attrs, classes_by_column=classes_by_column, zip=zip)
 
 
 def create_tabs(content_by_tab_name, tabs_id):
-    doc, tag, text = Doc().tagtext()
+    template = Template('''
+    <ul class="nav nav-pills" id={{ tabs_id }} role="tablist">
+        {% for tab_name in content_by_tab_name.keys() %}
+            <li class="nav-item">
+                <a href="#{{ tabs_id }}--tab-{{ loop.index0 }}" class={% if loop.first %}"nav-link active"{% else %}"nav-link"{% endif %} role="tab" data-toggle="pill">
+                    {{ tab_name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="tab-content">
+        {% for content in content_by_tab_name.values() %}
+            <div class={% if loop.first %}"tab-pane active"{% else %}"tab-pane"{% endif %} id="{{ tabs_id }}--tab-{{ loop.index0 }}" role="tabpanel">
+                {{ content }}
+            </div>
+        {% endfor %}
+    </div>
+    ''')
 
-    with tag('ul', klass='nav nav-pills', id=tabs_id, role='tablist'):
-        is_first_tab = True
-        for i, tab_name in enumerate(content_by_tab_name.keys()):
-            with tag('li', klass='nav-item'):
-                tab_id = '{}--tab-{}'.format(tabs_id, i)
-
-                with tag('a', ('data-toggle', 'pill'), klass='nav-link', href='#' + tab_id, role='tab'):
-                    if is_first_tab:
-                        doc.attr(klass='nav-link active')
-                        is_first_tab = False
-
-                    doc.asis(tab_name)
-                
-    with tag('div', klass='tab-content'):
-        is_first_tab = True
-        for i, content in enumerate(content_by_tab_name.values()):
-            tab_id = '{}--tab-{}'.format(tabs_id, i)
-
-            with tag('div', id=tab_id, klass='tab-pane', role='tabpanel'):
-                if is_first_tab:
-                    doc.attr(klass='tab-pane active')
-                    is_first_tab = False
-                
-                doc.asis(content)
-    
-    return doc.getvalue()
+    return template.render(tabs_id=tabs_id, content_by_tab_name=content_by_tab_name)
 
 
 def code(code_string, language=None):
