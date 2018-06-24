@@ -13,6 +13,9 @@ from exprec import constants as c
 from exprec import utils
 
 
+MAX_CHARS_IN_SHORT_OUTPUT = 500
+
+
 def create_experiment_div(uuid):
     path = Path(c.DEFAULT_PARENT_FOLDER)/uuid
 
@@ -44,7 +47,7 @@ def create_experiment_div(uuid):
 
     content_by_tab_name = collections.OrderedDict()
     content_by_tab_name[html_utils.icon_title('eye', 'Summary')] = create_summary(uuid, path, experiment_json)
-    content_by_tab_name[html_utils.icon_title('terminal', 'Output')] = create_output(path)
+    content_by_tab_name[html_utils.icon_title('terminal', 'Output')] = create_short_output(path, uuid)
     content_by_tab_name[html_utils.icon_title('code', 'Code')] = create_code(uuid, path, experiment_json)
     content_by_tab_name[html_utils.icon_title('cube', 'Packages')] = create_packages(path)
     content_by_tab_name[html_utils.icon_title('chart-bar', 'Parameters')] = html_utils.create_parameters([uuid])
@@ -203,15 +206,39 @@ def load_code(code_path):
     return html_utils.code(code, language='python')
 
 
-def create_output(path):
+def create_short_output(path, uuid):
     filepath = path/'stdcombined.txt'
 
+    output = ''
+    output_truncated = False
+
     with filepath.open() as fp:
-        output = fp.read()
+        for i, line in enumerate(fp):
+            if i >= MAX_CHARS_IN_SHORT_OUTPUT:
+                output_truncated = True
+                break
+            
+            output += line
     
     output = cgi.escape(output)
+    html = html_utils.monospace(output)
 
-    return html_utils.monospace(output)
+    if output_truncated:
+        html += '''
+            <button id="show-all-output" class="btn btn-outline-primary" style="width: 120px;">Show all</button>
+            <script>
+                $('#show-all-output').click(function() {{
+                    var promise = $.get('/load_all_output/{uuid}');
+                    promise.done(function(result) {{
+                        $("#experiment-output").html(result);
+                    }});
+                }});
+            </script>
+        '''.format(uuid=uuid)
+    
+    html = '<div id="experiment-output">{}</div>'.format(html)
+
+    return html
 
 
 def create_charts(path):

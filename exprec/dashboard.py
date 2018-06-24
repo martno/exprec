@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 import shutil
 import os
+import cgi
 
 from exprec import table_creation
 from exprec import experiment_creation
@@ -125,4 +126,10 @@ def dashboard(host=None, port=None):
         
         return id
 
+    @app.route('/load_all_output/<id>', methods=['GET'])
+    def load_all_output(id):
+        with open(str(Path(c.DEFAULT_PARENT_FOLDER)/id/'stdcombined.txt')) as fp:
+            output = cgi.escape(fp.read())
+        return html_utils.monospace(output)
+    
     app.run(host=host, port=port, debug=True)
