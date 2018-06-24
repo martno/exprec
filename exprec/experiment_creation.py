@@ -41,8 +41,12 @@ def create_experiment_div(uuid):
     ''')
 
     tags = sorted(experiment_json['tags'])
-    header = template.render(fa_icon=html_utils.fa_icon, title=experiment_json['title'], uuid_color=html_utils.color_circle(uuid),
-        short_uuid=utils.get_short_uuid(uuid), filename=experiment_json['filename'],
+    header = template.render(fa_icon=html_utils.fa_icon, 
+        title=experiment_json['title'], 
+        uuid_color=html_utils.color_circle(uuid),
+        short_uuid=utils.get_short_uuid(uuid), 
+        status_icon=html_utils.get_status_icon_tag(experiment_json['status']),
+        filename=experiment_json['filename'],
         tags=' '.join([html_utils.badge(tag) for tag in tags]))
 
     content_by_tab_name = collections.OrderedDict()
