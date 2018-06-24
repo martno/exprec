@@ -85,7 +85,7 @@ def create_summary(uuid, path, experiment_json):
     items = [
         ('Status', html_utils.get_status_icon_tag(status) + ' ' + status),
         ('ID', html_utils.monospace(uuid)),
-        ('Title<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#titleModal">Edit</button>', '<div id="title-div">{}</div>'.format(experiment_json['title'])),
+        ('Title<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#titleModal">Edit</button>', '<div id="title-div">{}</div>'.format(cgi.escape(experiment_json['title']))),
         ('<i class="fas fa-info-circle"></i> Description<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#descriptionModal">Edit</button>', '<div id="description-div"></div>'),
         ('<i class="fas fa-lightbulb"></i> Conclusion<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#conclusionModal">Edit</button>', '<div id="conclusion-div"></div>'),
         ('Filename', html_utils.color_circle_and_string(experiment_json['filename'])),
@@ -326,7 +326,7 @@ def create_modal_html(uuid, experiment_json):
               <h5 class="modal-title" id="titleModalLabel">Title</h5>
             </div>
             <div class="modal-body">
-              <input type="text" class="form-control" id="titleTextInput" value='{title}'></input>
+              <input type="text" class="form-control" id="titleTextInput"></input>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -373,17 +373,21 @@ def create_modal_html(uuid, experiment_json):
       </div>
 
       <script>
+        $('#titleTextInput').attr('value', `{title}`);
+
         var converter = new showdown.Converter();
         $('#descriptionTextArea').text(`{description}`);
         $('#conclusionTextArea').text(`{conclusion}`);
-        $('#description-div').html(converter.makeHtml(`{description}`));
-        $('#conclusion-div').html(converter.makeHtml(`{conclusion}`));
+        $('#description-div').html(converter.makeHtml(`{description_escaped}`));
+        $('#conclusion-div').html(converter.makeHtml(`{conclusion_escaped}`));
       </script>
     """.format(
         uuid=uuid, 
-        title=experiment_json['title'], 
+        title=experiment_json['title'],
         description=experiment_json['description'], 
         conclusion=experiment_json['conclusion'],
+        description_escaped=cgi.escape(experiment_json['description']), 
+        conclusion_escaped=cgi.escape(experiment_json['conclusion']),
     )
 
     return html

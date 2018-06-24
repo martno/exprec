@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess
 import markdown
 import psutil
+import cgi
 
 from exprec import utils
 from exprec import html_utils
@@ -139,7 +140,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
         'lightbulbicon': html_utils.icon('fas fa-lightbulb {}'.format(lightbulb_class)),
         'PID': html_utils.fa_icon(pid_icon_name) + ' ' + str(experiment_pid),
         'Name': name if len(name) > 0 else None,
-        'Title': metadata['title'] if metadata['title'] else None,
+        'Title': cgi.escape(metadata['title']) if metadata['title'] else None,
         'Filename': html_utils.color_circle_and_string(metadata['filename']),
         'Duration': str(duration),
         'Start': start.strftime('%Y-%m-%d %H:%M:%S'),
@@ -148,8 +149,8 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
         'File space': file_space,
         'ID': html_utils.color_circle(uuid) + ' ' + utils.get_short_uuid(uuid),
         'Git commit': html_utils.color_circle_and_string(metadata['git']['short']) if metadata['git'] is not None else None,
-        'Description': markdown.markdown(metadata['description']),
-        'Conclusion': markdown.markdown(metadata['conclusion']),
+        'Description': markdown.markdown(cgi.escape(metadata['description'])),
+        'Conclusion': markdown.markdown(cgi.escape(metadata['conclusion'])),
         'Arguments': html_utils.monospace(' '.join(metadata['arguments'])),
         'Exception': html_utils.monospace('{}: {}'.format(metadata['exceptionType'], metadata['exceptionValue']) if metadata['exceptionType'] is not None else ''),
     }
