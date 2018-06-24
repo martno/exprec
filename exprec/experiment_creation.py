@@ -23,8 +23,8 @@ def create_experiment_div(uuid):
 
     template = Template('''
     <div>
-        <button class="btn btn-primary button-go-back" style="width: 61px;">{{ fa_icon('arrow-left') }}</button>
-        <button class="btn btn-primary button-restore-source-code" style="width: 61px;">{{ fa_icon('file-code') }}</button>
+        <button class="btn btn-primary button-go-back" style="height: 38px; width: 61px;">{{ fa_icon('arrow-left') }}</button>
+        <button class="btn btn-primary button-restore-source-code" style="height: 38px; width: 61px;"><i class="material-icons">restore</i></button>
         <hr>
         <div>
             <h5>

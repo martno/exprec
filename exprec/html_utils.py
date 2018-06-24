@@ -42,6 +42,10 @@ def fa_icon(icon_name):
     return icon('fas fa-' + icon_name)
 
 
+def m_icon(icon_name):
+    return '<i class="material-icons">{}</i>'.format(icon_name)
+
+
 def get_status_icon_tag(status):
     return icon(ICON_BY_STATUS[status])
 

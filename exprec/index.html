@@ -7,7 +7,10 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
 
@@ -41,7 +44,7 @@
                 <br>
                 <button id="show-inbox" class="btn btn-outline-primary button-inbox" style="width: 120px;"><i class="fas fa-inbox"></i> Inbox</button>
                 <br>
-                <button id="show-archive" class="btn btn-outline-primary button-inbox" style="width: 120px;"><i class="fas fa-archive"></i> Archive</button>
+                <button id="show-archive" class="btn btn-outline-primary button-inbox" style="width: 120px;"><i class="material-icons">archive</i> Archive</button>
                 <br><br>
                 <h5><i class="fas fa-tags"></i> Tags</h5>
                 <div id="tag-buttons"></div>
@@ -54,17 +57,17 @@
         <div id="main-window" style="width: 100%; display: table-cell;">
           <div id="main">
             <div class="btn-group" role="group">
-              <button class="btn btn-primary button-archive" style="width: 61px;" data-toggle="tooltip" title="Archive"><i class="fas fa-archive"></i></button>
-              <button class="btn btn-primary button-delete" style="width: 61px;" data-toggle="tooltip" title="Delete"><i class="fas fa-trash-alt"></i></button>
-              <button class="btn btn-primary button-delete-files" style="width: 61px;" data-toggle="tooltip" title="Delete files"><i class="fas fa-fire"></i></button>
+              <button class="btn btn-primary button-archive" style="height: 38px; width: 61px;" data-toggle="tooltip" title="Archive"><i class="material-icons">archive</i></button>
+              <button class="btn btn-primary button-delete" style="height: 38px; width: 61px;" data-toggle="tooltip" title="Delete"><i class="material-icons">delete</i></button>
+              <button class="btn btn-primary button-delete-files" style="height: 38px; width: 61px;" data-toggle="tooltip" title="Delete files"><i class="material-icons">clear_all</i></button>
             </div>
             <div class="btn-group" role="group">
-              <button class="btn btn-primary button-add-tags" style="width: 61px;" data-toggle="tooltip" title="Add tags"><i class="fa fa-plus"></i> <i class="fas fa-tags"></i></button>
-              <button class="btn btn-primary button-remove-tags" style="width: 61px;" data-toggle="tooltip" title="Remove tags"><i class="fa fa-minus"></i> <i class="fas fa-tags"></i></button>
+              <button class="btn btn-primary button-add-tags" style="height: 38px; width: 61px;" data-toggle="tooltip" title="Add tags"><i class="fa fa-plus"></i> <i class="fas fa-tags"></i></button>
+              <button class="btn btn-primary button-remove-tags" style="height: 38px; width: 61px;" data-toggle="tooltip" title="Remove tags"><i class="fa fa-minus"></i> <i class="fas fa-tags"></i></button>
             </div>
-            <button class="btn btn-primary button-compare" style="width: 61px;" data-toggle="tooltip" title="Compare"><i class="fas fa-exchange-alt"></i></button>
+            <button class="btn btn-primary button-compare" style="height: 38px; width: 61px;" data-toggle="tooltip" title="Compare"><i class="material-icons">compare_arrows</i></button>
 
-            <button class="btn btn-primary button-toggle" style="width: 61px;" data-toggle="tooltip" title="Select/Deselect all"><i class="fas fa-adjust"></i></button>
+            <button class="btn btn-primary button-toggle" style="height: 38px; width: 61px;" data-toggle="tooltip" title="Select/Deselect all"><i class="fas fa-adjust"></i></button>
 
             <hr>
 

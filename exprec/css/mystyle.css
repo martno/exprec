@@ -39,3 +39,9 @@ td.details-control {
 tr.shown td.details-control {
     background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center center;
 }
+
+.material-icons {
+    display: inline-flex;
+    vertical-align: middle;
+    margin-top: -2px;
+}

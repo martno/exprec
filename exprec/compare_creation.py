@@ -50,7 +50,7 @@ def get_experiments_diff(uuid1, uuid2):
 def create_compare(source1_name, source2_name, source1_path, source2_path):
     html = """
     <div>
-        <h5>{source1_name} <i class="fas fa-exchange-alt"></i> {source2_name}</h5>
+        <h5>{source1_name} <i class="material-icons">compare_arrows</i> {source2_name}</h5>
 
         <div id="diff-div"></div>
     </div>
