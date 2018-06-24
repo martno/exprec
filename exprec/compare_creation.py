@@ -6,7 +6,6 @@ from exprec import constants as c
 from exprec import html_utils
 
 
-
 def compare_experiments(uuids):
     html = '<button class="btn btn-primary button-go-back" style="width: 61px;"><i class="fas fa-arrow-left"></i></button>'
     html += '<hr>'
@@ -37,14 +36,15 @@ def get_experiment_diff_with_local(uuid):
     local_path = '.'
     uuid_source_path = str(Path(c.DEFAULT_PARENT_FOLDER)/uuid/'src')
 
-    return create_compare('local', uuid, local_path, uuid_source_path)
+    return create_compare('local', html_utils.circle_with_short_uuid(uuid), local_path, uuid_source_path)
 
 
 def get_experiments_diff(uuid1, uuid2):
     uuid1_source_path = str(Path(c.DEFAULT_PARENT_FOLDER)/uuid1/'src')
     uuid2_source_path = str(Path(c.DEFAULT_PARENT_FOLDER)/uuid2/'src')
 
-    return create_compare(uuid1, uuid2, uuid1_source_path, uuid2_source_path)
+    return create_compare(html_utils.circle_with_short_uuid(uuid1), 
+        html_utils.circle_with_short_uuid(uuid2), uuid1_source_path, uuid2_source_path)
 
 
 def create_compare(source1_name, source2_name, source1_path, source2_path):

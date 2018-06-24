@@ -254,3 +254,7 @@ def create_parameters(uuids):
     attrs = [[]]*len(uuids) + [[('style', 'width: 100%;')]]
 
     return create_table(['Parameter', *params_by_uuid.keys()], rows, id='parameter-table', attrs=attrs)
+
+
+def circle_with_short_uuid(uuid):
+    return '{} {}'.format(color_circle(uuid), utils.get_short_uuid(uuid))
