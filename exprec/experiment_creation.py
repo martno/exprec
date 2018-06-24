@@ -348,6 +348,9 @@ def convert_image_to_base64(image):
 
 
 def create_modal_html(uuid, experiment_json):
+    description = experiment_json['description'].replace('`', '\`')
+    conclusion = experiment_json['conclusion'].replace('`', '\`')
+
     html = """
       <!-- Title Modal -->
       <div class="modal" id="titleModal" tabindex="-1" role="dialog" aria-labelledby="titleModalLabel" aria-hidden="true">
@@ -415,10 +418,10 @@ def create_modal_html(uuid, experiment_json):
     """.format(
         uuid=uuid, 
         title=experiment_json['title'],
-        description=experiment_json['description'], 
-        conclusion=experiment_json['conclusion'],
-        description_escaped=cgi.escape(experiment_json['description']), 
-        conclusion_escaped=cgi.escape(experiment_json['conclusion']),
+        description=description, 
+        conclusion=conclusion,
+        description_escaped=cgi.escape(description), 
+        conclusion_escaped=cgi.escape(conclusion),
     )
 
     return html
