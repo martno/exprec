@@ -105,11 +105,19 @@ class Experiment:
         self.stdcombined_logfile.close()
     
     def set_parameter(self, name, value):
+        """Sets the parameter to the given value. 
+
+        Only one value per parameter. You can overwrite a previously set parameter. 
+        """
         json_path = self.path / METADATA_JSON_FILENAME
         with utils.UpdateJsonFile(str(json_path)) as metadata_json:
             metadata_json['parameters'][name] = value
 
     def add_scalar(self, name, value, step=None):
+        """Records the scalar's value at a given step. 
+
+        The timestamp for setting this value is recorded as well, which can be accessed from the dashboard. 
+        """
         scalar_folder_path = self.path / c.SCALARS_FOLDER
         scalar_folder_path.mkdir(exist_ok=True)
         scalar_filepath = scalar_folder_path / '{}.csv'.format(name)
@@ -122,6 +130,13 @@ class Experiment:
             fp.write('{},{},{}\n'.format(step if step is not None else '', value, datetime.datetime.now().isoformat()))
 
     def add_image(self, name, image, step):
+        """Adds an image at a given step. 
+
+        Args:
+            name (str): The name of the image
+            image: The image to save. Should either be a Pillow image, or a numpy array which can be converted to a Pillow image. 
+            step (int)
+        """
         if type(image) == np.ndarray:
             image = Image.fromarray(image)
         
@@ -132,6 +147,16 @@ class Experiment:
         image.save(image_path)
 
     def open(self, filename, mode='r', uuid=None):
+        """
+        Args:
+            filename (str): A filename or path to a filename
+            mode (str): The mode in which the file is opened. Supports the same modes as Python's built-in `open()` function. 
+            uuid (str, None): A previous experiment's id. If given, it will look for the filename in the previous experiment's
+                saved files. Only supports 'r' mode when a uuid is given. 
+        Returns:
+            A file object
+        """
+
         assert uuid != self.uuid, "'uuid' may not be the same as this experiment's uuid. Set `uuid=None` to open a file with this experiment."
         assert '..' not in filename, filename
 
@@ -139,8 +164,7 @@ class Experiment:
             filepath = self.path/FILES_FOLDER/filename
             filepath.parent.mkdir(exist_ok=True)
         else:
-            assert 'w' not in mode, mode
-            assert 'a' not in mode, mode
+            assert 'r' in mode, mode
             filepath = Path(self.parent_folder)/uuid/FILES_FOLDER/filename
             
             if not filepath.exists():
