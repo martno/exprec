@@ -62,6 +62,12 @@ with Experiment(title='My experiment', tags=['tag1', 'tag2']) as experiment:
 ```
 
 
+Examples
+--------
+
+Scripts under `examples/` demonstrates how to use this package. 
+
+
 Licence
 -------
 
