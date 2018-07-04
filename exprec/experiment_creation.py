@@ -11,7 +11,7 @@ from jinja2 import Template
 from exprec import html_utils
 from exprec import constants as c
 from exprec import utils
-
+from exprec.html_utils import same_line
 
 MAX_CHARS_IN_SHORT_OUTPUT = 500
 
@@ -93,8 +93,10 @@ def create_summary(uuid, path, experiment_json):
         ('Status', html_utils.get_status_icon_tag(status) + ' ' + status),
         ('ID', html_utils.monospace(uuid)),
         ('Title<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#titleModal">Edit</button>', '<div id="title-div">{}</div>'.format(cgi.escape(experiment_json['title']))),
-        ('<i class="fas fa-info-circle"></i> Description<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#descriptionModal">Edit</button>', '<div id="description-div"></div>'),
-        ('<i class="fas fa-lightbulb"></i> Conclusion<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#conclusionModal">Edit</button>', '<div id="conclusion-div"></div>'),
+        (same_line('<i class="fas fa-info-circle"></i> Description') \
+            + '<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#descriptionModal">Edit</button>', '<div id="description-div"></div>'),
+        (same_line('<i class="fas fa-lightbulb"></i> Conclusion') \
+            + '<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#conclusionModal">Edit</button>', '<div id="conclusion-div"></div>'),
         ('Filename', html_utils.color_circle_and_string(experiment_json['filename'])),
         ('Duration', str(duration)),
         ('Start', start.strftime('%Y-%m-%d %H:%M:%S')),
