@@ -226,7 +226,8 @@ function loadMain(whitelist, blacklist) {
                 }
             ],
             select: {
-                style: 'multi'
+                style: 'multi',
+                selector: ':not(:first-child)'
             }
         });
 
