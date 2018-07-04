@@ -257,23 +257,23 @@ function format ( d ) {
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
         '<tr>'+
             '<td>Title</td>'+
-            '<td>'+ d[8] +'</td>'+
+            '<td>'+ d[6] +'</td>'+
         '</tr>'+
         '<tr>'+
             '<td><i class="fas fa-info-circle"></i> Description:</td>'+
-            '<td>'+ d[17] +'</td>'+
+            '<td>'+ d[15] +'</td>'+
         '</tr>'+
         '<tr>'+
             '<td><i class="fas fa-lightbulb"></i> Conclusion:</td>'+
-            '<td>'+ d[18] +'</td>'+
+            '<td>'+ d[16] +'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>Arguments:</td>'+
-            '<td>'+ d[19] +'</td>'+
+            '<td>'+ d[17] +'</td>'+
         '</tr>'+
         '<tr>'+
             '<td>Exception:</td>'+
-            '<td>' + d[20] + '</td>'+
+            '<td>' + d[18] + '</td>'+
         '</tr>'+
     '</table>';
 }
