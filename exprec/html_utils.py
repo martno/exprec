@@ -262,3 +262,7 @@ def create_parameters(uuids):
 
 def circle_with_short_uuid(uuid):
     return '{} {}'.format(color_circle(uuid), utils.get_short_uuid(uuid))
+
+
+def same_line(html):
+    return '<div style="white-space: nowrap">{}</div>'.format(html)

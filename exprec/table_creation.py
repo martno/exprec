@@ -8,6 +8,7 @@ import cgi
 from exprec import utils
 from exprec import html_utils
 from exprec import constants as c
+from exprec.html_utils import same_line
 
 N_SIGNIFICANT_DIGITS = 4
 
@@ -131,6 +132,8 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
     else:
         lightbulb_class = 'text-{}'.format('primary' if metadata['conclusion'] else 'danger')
 
+    arguments = ' '.join(metadata['arguments'])
+
     procedure_item_by_column = {
         'DetailsControl': '',
         'UUID': uuid,
@@ -138,20 +141,21 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
         'Status': html_utils.get_status_icon_tag(status),
         'infoicon': html_utils.icon('fas fa-info-circle {}'.format('text-primary' if metadata['description'] else 'text-secondary')),
         'lightbulbicon': html_utils.icon('fas fa-lightbulb {}'.format(lightbulb_class)),
-        'PID': html_utils.fa_icon(pid_icon_name) + ' ' + str(experiment_pid),
+        'PID': same_line(html_utils.fa_icon(pid_icon_name) + ' ' + str(experiment_pid)),
         'Name': name if len(name) > 0 else None,
         'Title': cgi.escape(metadata['title']) if metadata['title'] else None,
-        'Filename': html_utils.color_circle_and_string(metadata['filename']),
+        'Filename': same_line(html_utils.color_circle_and_string(metadata['filename'])),
         'Duration': str(duration),
         'Start': start.strftime('%Y-%m-%d %H:%M:%S'),
         'End': end.strftime('%Y-%m-%d %H:%M:%S') if end is not None else None,
         'Tags': ' '.join([html_utils.badge(tag) for tag in tags]),
         'File space': file_space,
-        'ID': html_utils.color_circle(uuid) + ' ' + utils.get_short_uuid(uuid),
-        'Git commit': html_utils.color_circle_and_string(metadata['git']['short']) if metadata['git'] is not None else None,
+        'ID': same_line("""<button class='btn btn-light btn-xs' onclick="copyToClipboard('{}')">{}</button>""".format(utils.get_short_uuid(uuid), html_utils.fa_icon('copy')) \
+            + ' ' + html_utils.color_circle(uuid) + ' ' + utils.get_short_uuid(uuid)),
+        'Git commit': same_line(html_utils.color_circle_and_string(metadata['git']['short'])) if metadata['git'] is not None else None,
         'Description': markdown.markdown(cgi.escape(metadata['description'])),
         'Conclusion': markdown.markdown(cgi.escape(metadata['conclusion'])),
-        'Arguments': html_utils.monospace(' '.join(metadata['arguments'])),
+        'Arguments': html_utils.monospace(arguments + """ <button class='btn btn-light btn-xs' onclick="copyToClipboard('{}')">{}</button>""".format(arguments, html_utils.fa_icon('copy'))),
         'Exception': html_utils.monospace('{}: {}'.format(metadata['exceptionType'], metadata['exceptionValue']) if metadata['exceptionType'] is not None else ''),
     }
 
