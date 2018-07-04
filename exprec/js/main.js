@@ -211,7 +211,7 @@ function loadMain(whitelist, blacklist) {
                 extend: 'columnsToggle',
                 columns: '.toggle'
             } ],
-            "order": [[ 11, "desc" ]],  // 'Start' column
+            "order": [[ 9, "desc" ]],  // 'Start' column
             columnDefs: [
                 {
                     targets: 'hidden-title',
