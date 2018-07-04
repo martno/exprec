@@ -16,3 +16,7 @@ class Test(unittest.TestCase):
         
         # Clean up:
         shutil.rmtree(experiment_path)
+
+
+if __name__ == '__main__':
+    unittest.main()
