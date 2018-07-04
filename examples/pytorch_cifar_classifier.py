@@ -45,7 +45,7 @@ def main(epochs, lr, title):
         step = 0
         for epoch in range(epochs):  # loop over the dataset multiple times
             running_loss = 0.0
-            for i, data in enumerate(trainloader)):
+            for i, data in enumerate(trainloader):
                 # get the inputs
                 inputs, labels = data
 
