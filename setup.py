@@ -25,7 +25,7 @@ setuptools.setup(
     author="Martin Nordstrom",
     author_email="martin.nordstrom87@gmail.com",
 
-    description="Exprec records your execution runs so you can compare different experiments and more easily reproduce results.",
+    description="Exprec records your experiments so you can compare different runs and easily reproduce results.",
     long_description=readme,
 
     packages=setuptools.find_packages(include=['exprec']),

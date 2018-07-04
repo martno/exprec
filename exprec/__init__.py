@@ -1,4 +1,4 @@
-"""exprec - Exprec records your execution runs so you can compare different experiments and more easily reproduce results."""
+"""exprec - Exprec records your experiments so you can compare different runs and easily reproduce results."""
 
 __version__ = '0.1.0'
 __author__ = """Martin Nordstrom"""
