@@ -18,7 +18,7 @@ from exprec import utils
 from exprec import constants as c
 
 
-DEFAULT_PARENT_FOLDER = '.experiments'
+PARENT_FOLDER = '.experiments'
 
 METADATA_JSON_FILENAME = 'experiment.json'
 PACKAGES_FILENAME = 'pip_freeze.txt'
@@ -33,7 +33,6 @@ class Experiment:
     tags = attr.ib(default=attr.Factory(list))
     verbose = attr.ib(default=True)
     exceptions_to_ignore = attr.ib(default=[KeyboardInterrupt])
-    parent_folder = attr.ib(default=DEFAULT_PARENT_FOLDER)
     name = attr.ib(default='')
 
     def __attrs_post_init__(self):
@@ -41,12 +40,12 @@ class Experiment:
         self.title = self.title.strip()
 
         self.uuid = str(uuid.uuid1())  # Time UUID
-        self.path = Path(self.parent_folder) / self.uuid
+        self.path = Path(PARENT_FOLDER) / self.uuid
 
     def __enter__(self):
-        Path(self.parent_folder).mkdir(exist_ok=True)
+        Path(PARENT_FOLDER).mkdir(exist_ok=True)
 
-        if not is_name_available(self.name, self.parent_folder):
+        if not is_name_available(self.name, PARENT_FOLDER):
             raise ValueError("Name '{}' is already occupied.".format(self.name))
 
         self.path.mkdir(exist_ok=False)
@@ -165,12 +164,12 @@ class Experiment:
             filepath.parent.mkdir(exist_ok=True)
         else:
             assert 'r' in mode, mode
-            filepath = Path(self.parent_folder)/uuid/FILES_FOLDER/filename
+            filepath = Path(PARENT_FOLDER)/uuid/FILES_FOLDER/filename
             
             if not filepath.exists():
                 raise FileNotFoundError("File '{}' doesn't exist.".format(str(filepath)))
             
-            other_experiment_metadata_json = utils.load_json(str(Path(self.parent_folder)/uuid/METADATA_JSON_FILENAME))
+            other_experiment_metadata_json = utils.load_json(str(Path(PARENT_FOLDER)/uuid/METADATA_JSON_FILENAME))
             if other_experiment_metadata_json['status'] == 'running':
                 raise ValueError("Loading from a running experiment is not allowed. Other experiment's UUID: {}".format(uuid))
 
