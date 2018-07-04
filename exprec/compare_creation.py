@@ -60,5 +60,8 @@ def create_compare(source1_name, source2_name, source1_path, source2_path):
     output = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     diff_string = output.stdout.read().decode('utf-8')
 
-    return html, diff_string
+    if not diff_string:
+        # This is required, or Diff2Html will raise a warning. 
+        diff_string = 'diff -ru {} {}'.format(source1_path, source2_path)
 
+    return html, diff_string
