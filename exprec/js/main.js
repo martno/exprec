@@ -198,6 +198,8 @@ function loadMain(whitelist, blacklist) {
                 });
 
                 highlightAllCode();
+
+                $('[data-toggle="tooltip"]').tooltip()
             });
         });
 
