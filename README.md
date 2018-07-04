@@ -68,6 +68,60 @@ Examples
 Scripts under `examples/` demonstrates how to use this package. 
 
 
+API
+---
+
+### Experiment
+
+```python
+Experiment(self, title='', tags=list, verbose=True, exceptions_to_ignore=[<class 'KeyboardInterrupt'>], name='') -> None
+```
+
+#### set_parameter
+
+```python
+Experiment.set_parameter(self, name, value)
+```
+Sets the parameter to the given value.
+
+Only one value per parameter. You can overwrite a previously set parameter.
+
+#### add_scalar
+
+```python
+Experiment.add_scalar(self, name, value, step=None)
+```
+Records the scalar's value at a given step.
+
+The timestamp for setting this value is recorded as well, which can be accessed from the dashboard.
+
+#### add_image
+
+```python
+Experiment.add_image(self, name, image, step)
+```
+Adds an image at a given step.
+
+Args:
+    name (str): The name of the image
+    image: The image to save. Should either be a Pillow image, or a numpy array which can be converted to a Pillow image.
+    step (int)
+
+#### open
+
+```python
+Experiment.open(self, filename, mode='r', uuid=None)
+```
+
+Args:
+    filename (str): A filename or path to a filename
+    mode (str): The mode in which the file is opened. Supports the same modes as Python's built-in `open()` function.
+    uuid (str, None): A previous experiment's id. If given, it will look for the filename in the previous experiment's
+        saved files. Only supports 'r' mode when a uuid is given.
+Returns:
+    A file object
+
+
 Licence
 -------
 
