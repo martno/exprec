@@ -254,7 +254,7 @@ function loadMain(whitelist, blacklist) {
 
 function format ( d ) {
     // `d` is the original data object for the row
-    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+    return '<div style="width: 800px;"><table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
         '<tr>'+
             '<td>Title</td>'+
             '<td>'+ d[6] +'</td>'+
@@ -275,7 +275,7 @@ function format ( d ) {
             '<td>Exception:</td>'+
             '<td>' + d[18] + '</td>'+
         '</tr>'+
-    '</table>';
+    '</table></div>';
 }
 
 
