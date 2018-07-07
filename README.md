@@ -112,6 +112,7 @@ Args:
 ```python
 Experiment.open(self, filename, mode='r', uuid=None)
 ```
+Opens a file in the experiment's folder. 
 ```
 Args:
     filename (str): A filename or path to a filename

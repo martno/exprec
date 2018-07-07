@@ -6,7 +6,7 @@ These examples demonstrates how to use Exprec. After running an example, run `ex
 ## `sklearn_digits_classifier.py`
 
 ```bash
-pip install scipy scikit-learn
+pip3 install scipy scikit-learn
 cd examples/
 python3 sklearn_digits_classifier.py
 ```
@@ -14,7 +14,7 @@ python3 sklearn_digits_classifier.py
 ## `pytorch_cifar_classifier.py`
 
 ```bash
-pip install torch torchvision
+pip3 install torch torchvision
 cd examples/
 python3 pytorch_cifar_classifier.py
 ```

@@ -146,7 +146,8 @@ class Experiment:
         image.save(image_path)
 
     def open(self, filename, mode='r', uuid=None):
-        """
+        """Opens a file in the experiment's folder. 
+
         Args:
             filename (str): A filename or path to a filename
             mode (str): The mode in which the file is opened. Supports the same modes as Python's built-in `open()` function. 
