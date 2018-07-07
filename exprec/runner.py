@@ -106,7 +106,7 @@ class Experiment:
     def set_parameter(self, name, value):
         """Sets the parameter to the given value. 
 
-        Only one value per parameter. You can overwrite a previously set parameter. 
+        Only one value can be recorded per parameter. You can overwrite a previously set parameter. 
         """
         json_path = self.path / METADATA_JSON_FILENAME
         with utils.UpdateJsonFile(str(json_path)) as metadata_json:
