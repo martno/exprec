@@ -94,9 +94,9 @@ def create_summary(uuid, path, experiment_json):
         ('ID', html_utils.monospace(uuid)),
         ('Title<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#titleModal">Edit</button>', '<div id="title-div">{}</div>'.format(cgi.escape(experiment_json['title']))),
         (same_line('<i class="fas fa-info-circle"></i> Description') \
-            + '<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#descriptionModal">Edit</button>', '<div id="description-div"></div>'),
+            + '<br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#descriptionModal">Edit</button>', '<div id="description-div"></div>'),
         (same_line('<i class="fas fa-lightbulb"></i> Conclusion') \
-            + '<br><br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#conclusionModal">Edit</button>', '<div id="conclusion-div"></div>'),
+            + '<br><button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#conclusionModal">Edit</button>', '<div id="conclusion-div"></div>'),
         ('Filename', html_utils.color_circle_and_string(experiment_json['filename'])),
         ('Duration', str(duration)),
         ('Start', start.strftime('%Y-%m-%d %H:%M:%S')),
