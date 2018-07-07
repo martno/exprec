@@ -125,5 +125,5 @@ Returns:
 License
 -------
 
-MIT Licence
+MIT License
 
