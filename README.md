@@ -26,14 +26,14 @@ with Experiment() as experiment:
     # YOUR CODE HERE
 ```
 
-An experiment is recorded within the `with` statement. This includes recording the terminal output, the source code used and the packages that are installed at the time the experiment runs. You can also add parameters, scalars and images to the experiment (see below). 
+An experiment is recorded in the `with` statement. This includes recording the terminal output, the source code used and the packages that are installed at the time the experiment runs. You can also add parameters, scalars and images to the experiment (see below). 
 
 
 ### Dashboard
 
-Run `exprec` in your terminal to start the dashboard. 
+Run `exprec` in your terminal to start the dashboard. `exprec` has to be run from the same folder as you started your python script. 
 
-Now visit http://localhost:9090/ in your browser to see the dashboard. If the client and the exprec server are running on different machines, set the flag `--host=0.0.0.0` when starting `exprec`. This allows any client with access to the server to see the dashboard. 
+Now visit http://localhost:9090/ in your browser to see the dashboard. If the client and the exprec server run on different machines, set the flag `--host=0.0.0.0` when starting `exprec`. This allows any client with access to the server to see the dashboard. 
 
 
 ### More code examples
@@ -64,7 +64,7 @@ with Experiment(title='My experiment', tags=['tag1', 'tag2']) as experiment:
 Examples
 --------
 
-Scripts under `examples/` demonstrates how to use this package. 
+Scripts under `examples/` demonstrate how to use this package. 
 
 
 API
@@ -122,7 +122,7 @@ Returns:
     A file object
 ```
 
-Licence
+License
 -------
 
 MIT Licence
