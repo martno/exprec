@@ -13,7 +13,7 @@ from exprec import utils
 from exprec import html_utils
 
 
-def dashboard(host=None, port=None):
+def dashboard(host=None, port=None, restore_button=False):
     app = Flask(__name__)
 
     @app.route('/')
@@ -48,7 +48,7 @@ def dashboard(host=None, port=None):
     @app.route('/experiment/<id>', methods=['GET', 'DELETE'])
     def experiment(id):
         if request.method == 'GET':
-            return experiment_creation.create_experiment_div(id)
+            return experiment_creation.create_experiment_div(id, restore_button)
 
         elif request.method == 'DELETE':
             experiment_path = str(Path(c.DEFAULT_PARENT_FOLDER)/id)

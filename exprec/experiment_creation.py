@@ -16,7 +16,7 @@ from exprec.html_utils import same_line
 MAX_CHARS_IN_SHORT_OUTPUT = 500
 
 
-def create_experiment_div(uuid):
+def create_experiment_div(uuid, restore_button):
     path = Path(c.DEFAULT_PARENT_FOLDER)/uuid
 
     experiment_json = utils.load_json(str(path/c.METADATA_JSON_FILENAME))
@@ -24,7 +24,9 @@ def create_experiment_div(uuid):
     template = Template('''
     <div>
         <button class="btn btn-primary button-go-back" style="height: 38px; width: 61px;">{{ fa_icon('arrow-left') }}</button>
-        <button class="btn btn-primary button-restore-source-code" style="height: 38px; width: 61px;" data-toggle="tooltip" title="Restore code"><i class="material-icons">restore</i></button>
+        {% if restore_button %}
+            <button class="btn btn-primary button-restore-source-code" style="height: 38px; width: 61px;" data-toggle="tooltip" title="Restore code"><i class="material-icons">restore</i></button>
+        {% endif %}
         <hr>
         <div>
             <h5>
@@ -47,7 +49,8 @@ def create_experiment_div(uuid):
         short_uuid=utils.get_short_uuid(uuid), 
         status_icon=html_utils.get_status_icon_tag(experiment_json['status']),
         filename=experiment_json['filename'],
-        tags=' '.join([html_utils.badge(tag) for tag in tags]))
+        tags=' '.join([html_utils.badge(tag) for tag in tags]),
+        restore_button=restore_button)
 
     content_by_tab_name = collections.OrderedDict()
     content_by_tab_name[html_utils.icon_title('eye', 'Summary')] = create_summary(uuid, path, experiment_json)
