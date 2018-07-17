@@ -1,6 +1,7 @@
 "use strict";
 
 var UUID_INDEX = 0;
+var TABLE_VERSION = 1;
 
 
 $(document).ready(function() {
@@ -205,7 +206,6 @@ function loadMain(whitelist, blacklist) {
 
         var table = $('#experiment-table').DataTable({
             dom: 'Blfrtip',
-            stateSave: true,
             stateDuration: 60 * 60 * 24 * 7,
             buttons: [ {
                 extend: 'columnsToggle',
@@ -228,6 +228,18 @@ function loadMain(whitelist, blacklist) {
             select: {
                 style: 'multi',
                 selector: '.select-checkbox'
+            },
+            stateSave: true,
+            stateSaveParams: function (settings, data) {
+                data.tableVersion = TABLE_VERSION;
+            },
+            stateLoadParams: function (settings, data) {
+                if (!("tableVersion" in data)) {
+                    return false;
+                }
+                if (data.tableVersion !== TABLE_VERSION) {
+                    return false;
+                }
             }
         });
 
