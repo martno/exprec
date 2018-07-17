@@ -1,6 +1,6 @@
 "use strict";
 
-var UUID_INDEX = 1;
+var UUID_INDEX = 0;
 
 
 $(document).ready(function() {
@@ -145,7 +145,7 @@ $(document).ready(function() {
 function getSelectedUuids() {
     var uuids = new Array();
     var table = $('#experiment-table').DataTable();  // Obtains the existing datatable in #experiment-table.
-    var rowData = table.rows('.selected').data();
+    var rowData = table.rows( { selected: true } ).data();
 
     for (var i=0; i<rowData.length; i++) {
         uuids.push(rowData[i][UUID_INDEX]);
@@ -211,7 +211,7 @@ function loadMain(whitelist, blacklist) {
                 extend: 'columnsToggle',
                 columns: '.toggle'
             } ],
-            "order": [[ 9, "desc" ]],  // 'Start' column
+            "order": [[ 10, "desc" ]],  // 'Start' column
             columnDefs: [
                 {
                     targets: 'hidden-title',
@@ -226,7 +226,8 @@ function loadMain(whitelist, blacklist) {
                 }
             ],
             select: {
-                style: 'multi'
+                style: 'multi',
+                selector: '.select-checkbox'
             }
         });
 
@@ -244,10 +245,6 @@ function loadMain(whitelist, blacklist) {
                 tr.addClass('shown');
             }
         } );
-
-        $('#experiment-table tbody').on( 'click', 'tr', function () {
-            $(this).toggleClass('selected');
-        } );
     });
 }
 
@@ -257,23 +254,23 @@ function format ( d ) {
     return '<div style="width: 800px;"><table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
         '<tr>'+
             '<td>Title</td>'+
-            '<td>'+ d[6] +'</td>'+
+            '<td>'+ d[7] +'</td>'+
         '</tr>'+
         '<tr>'+
             '<td><i class="fas fa-info-circle"></i> Description:</td>'+
-            '<td>'+ d[15] +'</td>'+
-        '</tr>'+
-        '<tr>'+
-            '<td><i class="fas fa-lightbulb"></i> Conclusion:</td>'+
             '<td>'+ d[16] +'</td>'+
         '</tr>'+
         '<tr>'+
-            '<td>Arguments:</td>'+
+            '<td><i class="fas fa-lightbulb"></i> Conclusion:</td>'+
             '<td>'+ d[17] +'</td>'+
         '</tr>'+
         '<tr>'+
+            '<td>Arguments:</td>'+
+            '<td>'+ d[18] +'</td>'+
+        '</tr>'+
+        '<tr>'+
             '<td>Exception:</td>'+
-            '<td>' + d[18] + '</td>'+
+            '<td>' + d[19] + '</td>'+
         '</tr>'+
     '</table></div>';
 }

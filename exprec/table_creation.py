@@ -15,8 +15,9 @@ N_SIGNIFICANT_DIGITS = 4
 METADATA_JSON_FILENAME = 'experiment.json'
 
 COLUMNS = [
+    'UUID',  # This must be the first column, since main.js refers to index 0 when accessing the UUID. 
+    'select-row',
     'DetailsControl',
-    'UUID',
     'Show',
     'Icons',
     'PID',
@@ -37,6 +38,7 @@ COLUMNS = [
 ]
 
 CLASSES_BY_COLUMN = {
+    'select-row': ['select-checkbox', 'hidden-title'],
     'DetailsControl': ['hidden-title', 'details-control'],
     'UUID': ['hidden-column'],
     'Show': ['hidden-title'],
@@ -133,6 +135,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
     arguments = ' '.join(metadata['arguments'])
 
     procedure_item_by_column = {
+        'select-row': '',
         'DetailsControl': '',
         'UUID': uuid,
         'Show': "<button class='btn btn-primary btn-xs experiment-button' id='button-{}'>Show</button>".format(uuid),
