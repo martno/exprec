@@ -56,7 +56,7 @@ def create_compare(source1_name, source2_name, source1_path, source2_path):
     </div>
     """.format(source1_name=source1_name, source2_name=source2_name)
 
-    command = 'diff -ru {} {}'.format(source1_path, source2_path)
+    command = 'diff --recursive --unified --new-file {} {}'.format(source1_path, source2_path)
     output = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     diff_string = output.stdout.read().decode('utf-8')
 
