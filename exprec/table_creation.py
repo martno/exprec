@@ -132,7 +132,7 @@ def create_procedure_item_by_column(uuid, path, metadata, all_scalars, all_param
 
     infoicon_class = 'text-primary' if metadata['description'] else 'text-secondary'
 
-    arguments = ' '.join(metadata['arguments'])
+    arguments = utils.arguments_to_string(metadata['arguments'])
 
     procedure_item_by_column = {
         'select-row': '',

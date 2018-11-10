@@ -105,7 +105,7 @@ def create_summary(uuid, path, experiment_json):
         ('Start', start.strftime('%Y-%m-%d %H:%M:%S')),
         ('End', end.strftime('%Y-%m-%d %H:%M:%S') if end is not None else None),
         ('Tags', ' '.join([html_utils.badge(tag) for tag in tags])),
-        ('Arguments', html_utils.monospace(' '.join(experiment_json['arguments']))),
+        ('Arguments', html_utils.monospace(utils.arguments_to_string(experiment_json['arguments']))),
         ('Name', experiment_json['name']),
         ('File space', utils.get_file_space_representation(str(path/c.FILES_FOLDER))),
         ('Parents', html_utils.monospace(' '.join(parents))),

@@ -203,3 +203,7 @@ def uuid1_to_datetime(uuid1_string):
 def round_to_significant_digits(value, n_digits):
     format_string = '%.{}g'.format(n_digits)
     return float(format_string % value)
+
+
+def arguments_to_string(arguments):
+    return ' '.join('"{}"'.format(arg) if ' ' in arg else arg for arg in arguments)
