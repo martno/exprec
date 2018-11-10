@@ -54,10 +54,10 @@ def create_experiment_div(uuid, restore_button):
 
     content_by_tab_name = collections.OrderedDict()
     content_by_tab_name[html_utils.icon_title('eye', 'Summary')] = create_summary(uuid, path, experiment_json)
-    content_by_tab_name[html_utils.icon_title('terminal', 'Output')] = create_short_output(path, uuid)
+    content_by_tab_name[html_utils.icon_title('chart-bar', 'Parameters')] = html_utils.create_parameters([uuid])
     content_by_tab_name[html_utils.icon_title('code', 'Code')] = create_code(uuid, path, experiment_json)
     content_by_tab_name[html_utils.icon_title('cube', 'Packages')] = create_packages(path)
-    content_by_tab_name[html_utils.icon_title('chart-bar', 'Parameters')] = html_utils.create_parameters([uuid])
+    content_by_tab_name[html_utils.icon_title('terminal', 'Output')] = create_short_output(path, uuid)
     content_by_tab_name[html_utils.icon_title('chart-area', 'Charts')] = html_utils.create_charts([uuid])
     content_by_tab_name[html_utils.icon_title('image', 'Images')] = create_images(path)
 
