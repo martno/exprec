@@ -3,6 +3,8 @@ Exprec
 
 Exprec records your experiments so you can compare different runs and easily reproduce results. Exprec is short for 'experiment recorder'. 
 
+![Dashboard](https://user-images.githubusercontent.com/176676/48298763-1f26c880-e506-11e8-9846-59455764604c.gif)
+
 
 Installation
 ------------
@@ -27,15 +29,13 @@ with Experiment() as experiment:
 
 All output within this `with` statement will be logged, which can later be accessed in the dashboard (see below). All python code and installed packages are recorded as well. 
 
+
 ### Dashboard
 
-In your terminal:
-
-```bash
-exprec
-```
+Run `exprec` in your terminal to start the dashboard. 
 
 Now visit http://localhost:9090/ in your browser to see the dashboard. If the client and exprec server are running on different machines, set the flag `--host=0.0.0.0`. 
+
 
 ### More code examples
 
