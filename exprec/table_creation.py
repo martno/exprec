@@ -81,7 +81,7 @@ def create_table_from_uuids(uuids, path, filters):
     classes_by_dynamic_columns = {column: ['toggle', 'hidden-column'] for column in all_scalars + all_params}
     classes_by_column = {**CLASSES_BY_COLUMN, **classes_by_dynamic_columns}
 
-    html = '<div style="text-align: right"><small>Loaded at {}</small></div>'.format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    html = '<div style="text-align: right"><small>Updated at {}</small></div>'.format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     html += '\n'
     html += html_utils.create_table(COLUMNS + all_scalars + all_params, procedure_item_by_column_list, id='experiment-table', 
         classes_by_column=classes_by_column, extra_ths=[('', len(COLUMNS)), ('Scalars', len(all_scalars)), ('Parameters', len(all_params))])
