@@ -73,13 +73,13 @@ API
 ### Experiment
 
 ```python
-Experiment(self, title='', tags=[], verbose=True, exceptions_to_ignore=[<class 'KeyboardInterrupt'>], name='')
+Experiment(title='', tags=[], verbose=True, exceptions_to_ignore=['KeyboardInterrupt'], name='')
 ```
 
 #### set_parameter
 
 ```python
-Experiment.set_parameter(self, name, value)
+Experiment.set_parameter(name, value)
 ```
 Sets the parameter to the given value.
 
@@ -88,16 +88,14 @@ Only one value can be recorded per parameter. You can overwrite a previously set
 #### add_scalar
 
 ```python
-Experiment.add_scalar(self, name, value, step=None)
+Experiment.add_scalar(name, value, step=None)
 ```
 Records the scalar's value at a given step.
-
-The timestamp for setting this value is recorded as well, which can be accessed from the dashboard.
 
 #### add_image
 
 ```python
-Experiment.add_image(self, name, image, step)
+Experiment.add_image(name, image, step)
 ```
 Adds an image at a given step.
 ```
@@ -110,7 +108,7 @@ Args:
 #### open
 
 ```python
-Experiment.open(self, filename, mode='r', uuid=None)
+Experiment.open(filename, mode='r', uuid=None)
 ```
 Opens a file in the experiment's folder. 
 ```
@@ -123,8 +121,8 @@ Returns:
     A file object
 ```
 
+
 License
 -------
 
 MIT License
-
