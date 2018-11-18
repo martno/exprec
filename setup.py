@@ -19,7 +19,7 @@ requirements = [
 
 setuptools.setup(
     name="exprec",
-    version="0.1.0",
+    version="0.1.1",
     url="https://github.com/martno/exprec/",
 
     author="Martin Nordstrom",
