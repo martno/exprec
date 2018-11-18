@@ -16,7 +16,7 @@ Installation
 ------------
 
 ```bash
-pip install git+https://github.com/martno/exprec.git
+pip install exprec
 ```
 
 

@@ -27,6 +27,7 @@ setuptools.setup(
 
     description="Exprec records your experiments so you can compare different runs and easily reproduce results.",
     long_description=readme,
+    long_description_content_type="text/markdown",
 
     packages=setuptools.find_packages(include=['exprec']),
     package_dir={'exprec': 'exprec'},
@@ -48,6 +49,8 @@ setuptools.setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
     ],
     scripts=[
         'bin/exprec',
