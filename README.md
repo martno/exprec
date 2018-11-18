@@ -1,7 +1,13 @@
 Exprec
 ======
 
-Exprec records your experiments so you can compare different runs and easily reproduce results. Exprec is short for Experiment recorder. 
+Exprec records your experiments so you can compare different runs and easily reproduce results. 
+
+* Track your experiments for experiment comparison and reproducability
+* Minimum setup: only two lines of code required
+* Framework agnostic - works with any machine learning/deep learning framework
+* Experiments are saved locally - nothing is saved in the cloud
+
 
 ![Dashboard](https://user-images.githubusercontent.com/176676/48298763-1f26c880-e506-11e8-9846-59455764604c.gif)
 
@@ -33,7 +39,7 @@ An experiment is recorded in the `with` statement. This includes recording the t
 
 Run `exprec` in your terminal to start the dashboard. `exprec` has to be run from the same folder as you started your python script. 
 
-Now visit http://localhost:9090/ in your browser to see the dashboard. If the client and the exprec server run on different machines, set the flag `--host=0.0.0.0` when starting `exprec`. This allows any client with access to the server to see the dashboard. 
+Now visit http://localhost:8080/ in your browser to see the dashboard. If the client and the exprec server run on different machines, set the flag `--host=0.0.0.0` when starting `exprec`. This allows any client with access to the server to see the dashboard. 
 
 
 ### More code examples
@@ -116,6 +122,12 @@ Args:
 Returns:
     A file object
 ```
+
+
+Why "Exprec"?
+-------------
+
+Exprec is short for Experiment recorder. 
 
 
 License
