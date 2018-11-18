@@ -35,6 +35,7 @@ setuptools.setup(
             '*.html',
             'js/*',
             'css/*',
+            'static/*',
         ],
     },
 

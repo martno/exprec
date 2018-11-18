@@ -20,6 +20,10 @@ def dashboard(host=None, port=None, restore_button=False):
     def index():
         return send_from_directory('', 'index.html')
 
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory('static', 'favicon.ico')
+
     @app.route('/js/<path:path>')
     def send_js(path):
         return send_from_directory('js', path)
