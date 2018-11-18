@@ -4,6 +4,7 @@ import json
 import shutil
 import os
 import cgi
+import re
 
 from exprec import table_creation
 from exprec import experiment_creation
@@ -112,6 +113,10 @@ def dashboard(host=None, port=None, restore_button=False):
         experiment_json_path = Path(c.DEFAULT_PARENT_FOLDER)/id/c.METADATA_JSON_FILENAME
 
         with utils.UpdateJsonFile(str(experiment_json_path)) as experiment_json:
+            pattern = re.compile(c.TAG_REGEX_PATTERN)
+            if not all(pattern.match(tag) for tag in request.json):
+                return "Invalid tag(s). A tag can only include lower case ascii, 0-9 and hyphens.", 400
+
             for tag in request.json:
                 if tag not in experiment_json['tags']:
                     experiment_json['tags'].append(tag)

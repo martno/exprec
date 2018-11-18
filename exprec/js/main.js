@@ -67,9 +67,14 @@ $(document).ready(function() {
         tags = tags.split(" ");
 
         for (let uuid of selectedUuids) {
-            var _ = postJson('/add_tags/' + uuid, tags);
+            var promise = postJson('/add_tags/' + uuid, tags);
+            promise.done(function() {
+                loadMain([], ['archive']);
+            });
+            promise.fail(function(message) {
+                alert(message.responseText);
+            });
         }
-        loadMain([], ['archive']);
     });
 
     $('.button-remove-tags').click(function() {

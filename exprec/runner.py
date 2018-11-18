@@ -13,6 +13,7 @@ import os
 import numpy as np
 from PIL import Image
 import git
+import re
 
 from exprec import utils
 from exprec import constants as c
@@ -38,6 +39,10 @@ class Experiment:
 
         self.uuid = str(uuid.uuid1())  # Time UUID
         self.path = Path(c.DEFAULT_PARENT_FOLDER) / self.uuid
+
+        pattern = re.compile(c.TAG_REGEX_PATTERN)
+        if not all(pattern.match(tag) for tag in self.tags):
+            raise ValueError("Invalid tag(s). A tag can only include lower case ascii, 0-9 and hyphens.")
 
     def __enter__(self):
         Path(c.DEFAULT_PARENT_FOLDER).mkdir(exist_ok=True)
