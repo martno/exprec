@@ -3,7 +3,7 @@ Exprec
 
 Exprec records your experiments so you can compare different runs and easily reproduce results. 
 
-* Track your experiments for experiment comparison and reproducability
+* Track your experiments for experiment comparison and reproducibility
 * Minimum setup: only two lines of code required
 * Framework agnostic - works with any machine learning/deep learning framework
 * Experiments are saved locally - nothing is saved in the cloud
