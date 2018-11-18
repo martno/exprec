@@ -50,7 +50,7 @@ with Experiment(title='My experiment', tags=['tag1', 'tag2']) as experiment:
 
     with experiment.open('filename.txt', mode='w') as fp:
         fp.write('test\n')
-        # This creates a file in the experiment's folder (`.experiments/<experiment-id>/files/filename.txt`). It can be
+        # This creates a file in the experiment's folder (`.exprec/<experiment-id>/files/filename.txt`). It can be
         # accessed by other experiments by calling
         # `with experiment.open('filename.txt', mode='r', uuid=previous_experiment_uuid) as fp:`.
         # When opening a previous experiment's file, the previous experiment will be referred to as 

@@ -17,9 +17,6 @@ import git
 from exprec import utils
 from exprec import constants as c
 
-
-PARENT_FOLDER = '.experiments'
-
 METADATA_JSON_FILENAME = 'experiment.json'
 PACKAGES_FILENAME = 'pip_freeze.txt'
 FILES_FOLDER = 'files'
@@ -40,12 +37,12 @@ class Experiment:
         self.title = self.title.strip()
 
         self.uuid = str(uuid.uuid1())  # Time UUID
-        self.path = Path(PARENT_FOLDER) / self.uuid
+        self.path = Path(c.DEFAULT_PARENT_FOLDER) / self.uuid
 
     def __enter__(self):
-        Path(PARENT_FOLDER).mkdir(exist_ok=True)
+        Path(c.DEFAULT_PARENT_FOLDER).mkdir(exist_ok=True)
 
-        if not is_name_available(self.name, PARENT_FOLDER):
+        if not is_name_available(self.name, c.DEFAULT_PARENT_FOLDER):
             raise ValueError("Name '{}' is already occupied.".format(self.name))
 
         self.path.mkdir(exist_ok=False)
@@ -165,12 +162,12 @@ class Experiment:
             filepath.parent.mkdir(exist_ok=True)
         else:
             assert 'r' in mode, mode
-            filepath = Path(PARENT_FOLDER)/uuid/FILES_FOLDER/filename
+            filepath = Path(c.DEFAULT_PARENT_FOLDER)/uuid/FILES_FOLDER/filename
             
             if not filepath.exists():
                 raise FileNotFoundError("File '{}' doesn't exist.".format(str(filepath)))
             
-            other_experiment_metadata_json = utils.load_json(str(Path(PARENT_FOLDER)/uuid/METADATA_JSON_FILENAME))
+            other_experiment_metadata_json = utils.load_json(str(Path(c.DEFAULT_PARENT_FOLDER)/uuid/METADATA_JSON_FILENAME))
             if other_experiment_metadata_json['status'] == 'running':
                 raise ValueError("Loading from a running experiment is not allowed. Other experiment's UUID: {}".format(uuid))
 

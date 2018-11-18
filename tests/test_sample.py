@@ -3,6 +3,8 @@ import os.path
 import shutil
 import unittest
 
+from exprec import constants
+
 
 class Test(unittest.TestCase):
     def test_pass(self):
@@ -11,7 +13,7 @@ class Test(unittest.TestCase):
             with experiment.open('testfile.txt', mode='w') as fp:
                 fp.write('test\n')
         
-        experiment_path = os.path.join('.experiments', uuid)
+        experiment_path = os.path.join(constants.PARENT_FOLDER, uuid)
         self.assertTrue(os.path.exists(experiment_path))
         
         # Clean up:
